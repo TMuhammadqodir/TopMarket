@@ -15,5 +15,5 @@ public class ProductItemResultDto {
     public decimal QuantityInStock { get; set; }
     public ProductResultDto Product { get; set; }
     public ICollection<ProductItemAttachmentResultDto> ProductItemAttachments { get; set; }
-    public ICollection<VariationResultDto> Variations { get; set; }
+    public ICollection<VariationFeatureResultDto> Variations { get; set; }
 }

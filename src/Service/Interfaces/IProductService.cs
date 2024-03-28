@@ -11,6 +11,7 @@ public interface IProductService
     Task<ProductResultDto> RetrieveAsync(Expression<Func<Product, bool>> expression);
     Task<ProductResultDto> RetrieveAsync(long id);
     Task<IEnumerable<ProductResultDto>> RetrieveAllAsync(PaginationParams? paginationParams = null);
+    Task<IEnumerable<ProductResultDto>> RetrieveByCategoryIdAsync(long categoryId);
     Task<ProductResultDto> CreateAsync(ProductCreationDto dto);
     Task<ProductResultDto> ModifyAsync(ProductUpdateDto dto);
 

@@ -2,6 +2,7 @@
 using Data.IRepositories;
 using Domain.Entities.ProductFolder;
 using Microsoft.EntityFrameworkCore;
+using Service.DTOs.VariationOptions;
 using Service.DTOs.Variations;
 using Service.Exceptions;
 using Service.Interfaces;
@@ -13,14 +14,17 @@ public class VariationService : IVariationService
     private readonly IMapper mapper;
     private readonly IRepository<Variation> repository;
     private readonly IRepository<Category> categoryRepository;
+    private readonly IProductConfigurationService productConfigurationService;
     public VariationService(
         IMapper mapper, 
         IRepository<Variation> repository,
-        IRepository<Category> categoryRepository)
+        IRepository<Category> categoryRepository,
+        IProductConfigurationService productConfigurationService)
     {
         this.mapper = mapper;
         this.repository = repository;
         this.categoryRepository = categoryRepository;
+        this.productConfigurationService = productConfigurationService;
     }
 
     public async Task<VariationResultDto> CreateAsync(VariationCreationDto dto)
@@ -78,10 +82,28 @@ public class VariationService : IVariationService
         return this.mapper.Map<IEnumerable<VariationResultDto>>(variations);
     }
 
-    public async Task<IEnumerable<VariationResultDto>> GetFeaturesOfProduct(long categoryId)
+    public async Task<IEnumerable<VariationFeatureResultDto>> GetFeaturesOfProduct(long categoryId, long productItemId)
     {
-        var variations = this.repository.GetAll(v=> v.CategoryId.Equals(categoryId), includes: new[] { "VariationOptions" });
+        var variations = this.repository.GetAll(v=> v.CategoryId.Equals(categoryId)).ToList();
 
-        return this.mapper.Map<IEnumerable<VariationResultDto>>(variations);
+        var resultVariations = this.mapper.Map<List<VariationFeatureResultDto>>(variations);
+
+        var variationOptions = (await productConfigurationService.GetByProductItemIdAsync(productItemId)).Select(p=>p.VariationOption).ToList();
+
+        if(variationOptions is not null)
+        {
+            for(int i=0; i< resultVariations.Count; i++)
+            {
+                for(int j=0; j< variationOptions.Count; j++)
+                {
+                    if (resultVariations[i].Id.Equals(variationOptions[j].VariationId))
+                    {
+                        resultVariations[i].VariationOption = this.mapper.Map<VariationOptionFeatureResult>(variationOptions[j]);
+                    }
+                }
+            }
+        }
+
+        return resultVariations.AsEnumerable();
     }
 }

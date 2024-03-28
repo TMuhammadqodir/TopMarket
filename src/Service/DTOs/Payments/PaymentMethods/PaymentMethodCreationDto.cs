@@ -2,7 +2,7 @@
 
 namespace Service.DTOs.Payments.PaymentMethods;
 
-public class PaymentCreationDto
+public class PaymentMethodCreationDto
 {
     public long UserId { get; set; }
     public long PaymentTypeId { get; set; }

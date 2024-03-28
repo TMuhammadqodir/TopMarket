@@ -1,5 +1,7 @@
-﻿namespace Service.Services;
+﻿using Service.Interfaces;
 
-public class PromotionCategoryService
+namespace Service.Services;
+
+public class PromotionCategoryService : IPromotionCategoryService
 {
 }

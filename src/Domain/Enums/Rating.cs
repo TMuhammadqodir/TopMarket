@@ -2,9 +2,9 @@
 
 public enum Rating
 {
-    Rating1 = 1,
-    Rating2 = 2,
-    Rating3 = 3,
-    Rating4 = 4,
-    Rating5 = 5,
+    Poor = 1,
+    Bad = 2,
+    Average = 3,
+    Good = 4,
+    Excellent = 5,
 }

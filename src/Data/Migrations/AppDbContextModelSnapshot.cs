@@ -33,7 +33,7 @@ namespace Data.Migrations
                     b.Property<long>("CountryId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<long>("DistrictId")
@@ -87,7 +87,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -113,7 +113,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -155,7 +155,7 @@ namespace Data.Migrations
                     b.Property<long>("CountryId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -191,7 +191,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FileName")
@@ -224,7 +224,7 @@ namespace Data.Migrations
                     b.Property<long>("AddressId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Date")
@@ -274,7 +274,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -312,7 +312,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -338,7 +338,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -371,7 +371,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("ExpiryDate")
@@ -413,7 +413,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -439,7 +439,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -475,7 +475,7 @@ namespace Data.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -510,7 +510,7 @@ namespace Data.Migrations
                     b.Property<long>("AttachmentId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -533,30 +533,25 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductFolder.ProductConfiguration", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CretedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<long>("ProductItemId")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("UpdatetAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<long>("VariationOptionId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.HasIndex("ProductItemId");
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatetAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ProductItemId", "VariationOptionId");
 
                     b.HasIndex("VariationOptionId");
 
@@ -571,7 +566,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -611,7 +606,7 @@ namespace Data.Migrations
                     b.Property<long>("AttachmentId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -640,7 +635,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -673,32 +668,27 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductFolder.PromotionCategory", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<long>("PromotionId")
                         .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<long>("PromotionId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("UpdatetAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("PromotionId", "CategoryId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("PromotionId");
 
                     b.ToTable("PromotionCategories");
                 });
@@ -714,7 +704,7 @@ namespace Data.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -742,7 +732,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -773,7 +763,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -782,12 +772,7 @@ namespace Data.Migrations
                     b.Property<DateTime?>("UpdatetAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("ShoppingCarts");
                 });
@@ -803,17 +788,20 @@ namespace Data.Migrations
                     b.Property<long>("CartId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
                     b.Property<long>("ProductItemId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Quantity")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime?>("UpdatetAt")
                         .HasColumnType("timestamp with time zone");
@@ -835,7 +823,10 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<long>("CartId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
@@ -873,22 +864,24 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CartId");
+
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Domain.Entities.UserFolder.UserAddress", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<long>("AddressId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsDefault")
                         .HasColumnType("boolean");
@@ -899,14 +892,9 @@ namespace Data.Migrations
                     b.Property<DateTime?>("UpdatetAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "AddressId");
 
                     b.HasIndex("AddressId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UserAddresses");
                 });
@@ -923,7 +911,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CretedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
@@ -932,9 +920,8 @@ namespace Data.Migrations
                     b.Property<long>("OrderLineId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("RatingValue")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("RatingValue")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatetAt")
                         .HasColumnType("timestamp with time zone");
@@ -1201,21 +1188,10 @@ namespace Data.Migrations
                     b.Navigation("Variation");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Shopping.ShoppingCart", b =>
-                {
-                    b.HasOne("Domain.Entities.UserFolder.User", "User")
-                        .WithMany("ShoppingCarts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Domain.Entities.Shopping.ShoppingCartItem", b =>
                 {
                     b.HasOne("Domain.Entities.Shopping.ShoppingCart", "Cart")
-                        .WithMany("ShoppingCartItems")
+                        .WithMany("Items")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1229,6 +1205,17 @@ namespace Data.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("ProductItem");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserFolder.User", b =>
+                {
+                    b.HasOne("Domain.Entities.Shopping.ShoppingCart", "Cart")
+                        .WithMany()
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
                 });
 
             modelBuilder.Entity("Domain.Entities.UserFolder.UserAddress", b =>
@@ -1371,7 +1358,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.Entities.Shopping.ShoppingCart", b =>
                 {
-                    b.Navigation("ShoppingCartItems");
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Domain.Entities.UserFolder.User", b =>
@@ -1379,8 +1366,6 @@ namespace Data.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("PaymentMethods");
-
-                    b.Navigation("ShoppingCarts");
 
                     b.Navigation("UserAddresses");
 

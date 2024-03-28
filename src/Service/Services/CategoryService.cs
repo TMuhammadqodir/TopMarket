@@ -40,7 +40,7 @@ public class CategoryService :ICategoryService
 
     public async Task<CategoryResultDto> UpdateAsync(CategoryUpdateDto dto)
     {
-        var existCategory = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), includes: new[] { "Products", "Variations", "Parent", "PromotionCategories" })
+        var existCategory = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), includes: new[] { "Products", "Variations", "PromotionCategories" })
             ?? throw new NotFoundException($"This category was not found with {dto.Id}");
 
         if (dto.ParentId != 0)
@@ -51,8 +51,8 @@ public class CategoryService :ICategoryService
 
         if(!existCategory.Name.Equals(dto.Name, StringComparison.OrdinalIgnoreCase))
         {
-            var existCategory2 = await this.repository.GetAsync(c => c.Name.ToLower().Equals(dto.Name.ToLower()));
-            if (existCategory2 is not null)
+            var existCategoryName = await this.repository.GetAsync(c => c.Name.ToLower().Equals(dto.Name.ToLower()));
+            if (existCategoryName is not null)
                 throw new AlreadyExistException($"This category already exist with {dto.Name}");
         }
 
@@ -77,7 +77,7 @@ public class CategoryService :ICategoryService
 
     public async Task<CategoryResultDto> GetByIdAsync(long id)
     {
-        var existCategory = await this.repository.GetAsync(c => c.Id.Equals(id), includes: new[] { "Products", "Variations", "Parent", "PromotionCategories" })
+        var existCategory = await this.repository.GetAsync(c => c.Id.Equals(id), includes: new[] { "Products", "Variations", "PromotionCategories" })
             ?? throw new NotFoundException($"This category was not found with {id}");
 
         return this.mapper.Map<CategoryResultDto>(existCategory);
@@ -85,7 +85,7 @@ public class CategoryService :ICategoryService
 
     public async Task<IEnumerable<CategoryResultDto>> GetAllAsync()
     {
-        var categories = await this.repository.GetAll(includes: new[] { "Products", "Variations", "Parent", "PromotionCategories" }).ToListAsync();
+        var categories = await this.repository.GetAll(includes: new[] { "Products", "Variations", "PromotionCategories" }).ToListAsync();
 
         return this.mapper.Map<IEnumerable<CategoryResultDto>>(categories);
     }

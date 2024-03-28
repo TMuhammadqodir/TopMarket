@@ -44,7 +44,7 @@ public class ProductConfigurationService : IProductConfigurationService
 
     public async Task<ProductConfigurationResultDto> UpdateAsync(ProductConfigurationUpdateDto dto)
     {
-        var existProductConfiguration = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), includes: new[] { "ProductItem", "ProductConfigurationOptions" })
+        var existProductConfiguration = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), includes: new[] { "ProductItem", "VariationOption" })
             ?? throw new NotFoundException($"This productConfiguration was not found with {dto.Id}");
 
         var existProductItem = await this.productItemRepository.GetAsync(c => c.Id.Equals(dto.ProductItemId))
@@ -74,7 +74,7 @@ public class ProductConfigurationService : IProductConfigurationService
 
     public async Task<ProductConfigurationResultDto> GetByIdAsync(long id)
     {
-        var existProductConfiguration = await this.repository.GetAsync(c => c.Id.Equals(id), includes: new[] { "ProductItem", "ProductConfigurationOptions" })
+        var existProductConfiguration = await this.repository.GetAsync(c => c.Id.Equals(id), includes: new[] { "ProductItem", "VariationOption" })
             ?? throw new NotFoundException($"This productConfiguration was not found with {id}");
 
         return this.mapper.Map<ProductConfigurationResultDto>(existProductConfiguration);
@@ -82,7 +82,14 @@ public class ProductConfigurationService : IProductConfigurationService
 
     public async Task<IEnumerable<ProductConfigurationResultDto>> GetAllAsync()
     {
-        var productConfigurations = await this.repository.GetAll(includes: new[] { "ProductItem", "ProductConfigurationOptions" }).ToListAsync();
+        var productConfigurations = await this.repository.GetAll(includes: new[] { "ProductItem", "VariationOption" }).ToListAsync();
+
+        return this.mapper.Map<IEnumerable<ProductConfigurationResultDto>>(productConfigurations);
+    }
+
+    public async Task<IEnumerable<ProductConfigurationResultDto>> GetByProductItemIdAsync(long productItemId)
+    {
+        var productConfigurations = this.repository.GetAll(p=> p.ProductItemId.Equals(productItemId), includes: new[] { "ProductItem", "VariationOption" });
 
         return this.mapper.Map<IEnumerable<ProductConfigurationResultDto>>(productConfigurations);
     }

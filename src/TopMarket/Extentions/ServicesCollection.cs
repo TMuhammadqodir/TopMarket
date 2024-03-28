@@ -20,7 +20,7 @@ public static class ServicesCollection
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IPromotionService, PromotionService>();
-        services.AddScoped<IAuthsService, AuthService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAddressService, AddressService>();
         services.AddScoped<ICountryService, CountryService>();
         services.AddScoped<IDistrictService, DistrictService>();
@@ -34,6 +34,11 @@ public static class ServicesCollection
         services.AddScoped<IProductItemService, ProductItemService>();
         services.AddScoped<IProductItemAttachmentService, ProductItemAttachmentService>();
         services.AddScoped<IProductConfigurationService, ProductConfigurationService>();
+        services.AddScoped<ICartService, CartService>();
+        services.AddScoped<IPromotionCategoryService, PromotionCategoryService>();
+        services.AddScoped<IShippingMethodService, ShippingMethodService>();
+        services.AddScoped<IOrderStatusService, OrderStatusService>();
+
     }
     public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
     {

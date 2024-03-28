@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Service.Interfaces;
 
-public interface IAuthsService
+public interface IAuthService
 {
     Task<UserResultDto> RegisterAsync(UserCreationDto dto);
     Task<string> LoginAsync(UserLoginDto dto);

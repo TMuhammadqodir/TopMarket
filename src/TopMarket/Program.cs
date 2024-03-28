@@ -37,7 +37,7 @@ PathHepler.RegionPath = Path.GetFullPath(builder.Configuration.GetValue<string>(
 PathHepler.DistrictPath = Path.GetFullPath(builder.Configuration.GetValue<string>(("FilePath:DictrictsFilePaths")));
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

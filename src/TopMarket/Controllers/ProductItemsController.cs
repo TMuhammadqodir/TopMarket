@@ -25,12 +25,22 @@ public class ProductItemsController : BaseController
 
 
     [HttpPatch("Add")]
-    public async Task<IActionResult> AddAsync(ProductItemAdditionDto dto)
+    public async Task<IActionResult> AddAsync(ProductItemIncomeDto dto)
        => Ok(new Response
        {
            StatusCode = 200,
            Message = "Success",
            Data = await this.productItemService.AddAsync(dto)
+       });
+
+
+    [HttpPatch("Substract")]
+    public async Task<IActionResult> SubstractAsync(ProductItemIncomeDto dto)
+       => Ok(new Response
+       {
+           StatusCode = 200,
+           Message = "Success",
+           Data = await this.productItemService.SubstractAsync(dto)
        });
 
 
@@ -61,6 +71,16 @@ public class ProductItemsController : BaseController
            StatusCode = 200,
            Message = "Success",
            Data = await this.productItemService.GetByIdAsync(id)
+       });
+
+
+    [HttpGet("get-by-productId/{productId:long}")]
+    public async Task<IActionResult> GetByProductIdAsync(long productId)
+       => Ok(new Response
+       {
+           StatusCode = 200,
+           Message = "Success",
+           Data = await this.productItemService.GetByProductIdAsync(productId)
        });
 
 

@@ -22,6 +22,7 @@ public class ProductItemService : IProductItemService
     private readonly IVariationService variationService;
     private readonly IAttachmentService attachmentService;
     private readonly IRepository<Product> productRepository;
+    private readonly IRepository<Category> categoryRepository;
     private readonly IProductItemAttachmentService productItemAttachmentService;
     public ProductItemService(
         IMapper mapper,
@@ -29,6 +30,7 @@ public class ProductItemService : IProductItemService
         IVariationService variationService,
         IAttachmentService attachmentService,
         IRepository<Product> productRepository,
+        IRepository<Category> categoryRepository,
         IProductItemAttachmentService productItemAttachmentService)
     {
         this.mapper = mapper;
@@ -36,6 +38,7 @@ public class ProductItemService : IProductItemService
         this.variationService = variationService;
         this.productRepository = productRepository;
         this.attachmentService = attachmentService;
+        this.categoryRepository = categoryRepository;
         this.productItemAttachmentService = productItemAttachmentService;
     }
 
@@ -56,18 +59,35 @@ public class ProductItemService : IProductItemService
         return this.mapper.Map<ProductItemResultDto>(mappedProductItem);
     }
 
-    public async Task<ProductItemResultDto> AddAsync(ProductItemAdditionDto dto)
+    public async Task<ProductItemResultDto> AddAsync(ProductItemIncomeDto dto)
     {
         var existProductItem = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), new string[] { "Product" })
             ?? throw new NotFoundException($"This product was not found with {dto.Id}");
 
-        var mappedProductItem = this.mapper.Map(dto, existProductItem);
+        existProductItem.QuantityInStock += dto.QuantityInStock;
 
-        this.repository.Update(mappedProductItem);
+        this.repository.Update(existProductItem);
         await this.repository.SaveAsync();
 
-        return this.mapper.Map<ProductItemResultDto>(mappedProductItem);
+        return this.mapper.Map<ProductItemResultDto>(existProductItem);
     }
+
+    public async Task<ProductItemResultDto> SubstractAsync(ProductItemIncomeDto dto)
+    {
+        var existProductItem = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), new string[] { "Product" })
+            ?? throw new NotFoundException($"This product was not found with {dto.Id}");
+
+        if (existProductItem.QuantityInStock < dto.QuantityInStock)
+            throw new CustomException(400,"ProductItem quantity is not enough");
+
+        existProductItem.QuantityInStock -= dto.QuantityInStock;
+
+        this.repository.Update(existProductItem);
+        await this.repository.SaveAsync();
+
+        return this.mapper.Map<ProductItemResultDto>(existProductItem);
+    }
+
 
     public async Task<ProductItemResultDto> UpdateAsync(ProductItemUpdateDto dto)
     {
@@ -98,22 +118,50 @@ public class ProductItemService : IProductItemService
 
     public async Task<ProductItemResultDto> GetByIdAsync(long id)
     {
-        var existProductItem = await this.repository.GetAsync(c => c.Id.Equals(id), includes: new[] { "Product", "ProductItemAttachments.Attachment" })
+        var existProductItem = await this.repository.GetAsync(c => c.Id.Equals(id), 
+            includes: new[] { "Product", "ProductItemAttachments.Attachment" })
             ?? throw new NotFoundException($"This productItem was not found with {id}");
 
+        if (existProductItem.Product is null)
+            throw new NotFoundException("This productItem's product not found");
+        
         var categoryId = existProductItem.Product.CategoryId;
 
+        var existCategory = await this.categoryRepository.GetAsync(c => c.Id.Equals(categoryId))
+            ?? throw new NotFoundException("This productItem's category not found in productItemService");
+
         var result = this.mapper.Map<ProductItemResultDto>(existProductItem);
-        result.Variations = (await variationService.GetFeaturesOfProduct(categoryId)).ToList();
+        result.Variations = (await variationService.GetFeaturesOfProduct(categoryId, id)).ToList();
 
         return result;
     }
 
     public async Task<IEnumerable<ProductItemResultDto>> GetAllAsync()
     {
-        var ProductItems = await this.repository.GetAll(includes: new[] { "Product", "ProductItemAttachments.Attachment" }).ToListAsync();
+        var productItems = await this.repository.GetAll(
+            includes: new[] { "Product", "ProductItemAttachments.Attachment" }).ToListAsync();
 
-        return this.mapper.Map<IEnumerable<ProductItemResultDto>>(ProductItems);
+        var resultProductItems = new List<ProductItemResultDto>();
+
+        foreach (var productItem in productItems)
+        {
+            if (productItem.Product is null)
+                continue;
+
+            var categoryId = productItem.Product.CategoryId;
+
+            var existCategory = await this.categoryRepository.GetAsync(c => c.Id.Equals(categoryId));
+
+            if (existCategory is null)
+                continue;
+
+            var result = this.mapper.Map<ProductItemResultDto>(productItem);
+            result.Variations = (await variationService.GetFeaturesOfProduct(categoryId, productItem.Id)).ToList();
+
+            resultProductItems.Add(result);
+        }
+
+        return resultProductItems.AsEnumerable();
     }
 
     public async Task<ProductItemResultDto> AddImageAsync(long productItemId, AttachmentCreationDto dto)
@@ -148,5 +196,31 @@ public class ProductItemService : IProductItemService
         var image = existProductItem.ProductItemAttachments.FirstOrDefault(p=>p.AttachmentId.Equals(imageId));
 
         return true;
+    }
+
+    public async Task<IEnumerable<ProductItemResultDto>> GetByProductIdAsync(long productId)
+    {
+        var existProductItems = await this.repository.GetAll(p => p.ProductId.Equals(productId),
+            includes: new[] { "Product", "ProductItemAttachments.Attachment" }).ToListAsync();
+
+        var resultProductItems = new List<ProductItemResultDto>();
+
+        foreach (var productItem in existProductItems)
+        {
+            if (productItem.Product is null)
+                throw new NotFoundException("This productItem's product not found");
+
+            var categoryId = productItem.Product.CategoryId;
+
+            var existCategory = await this.categoryRepository.GetAsync(c => c.Id.Equals(categoryId))
+                ?? throw new NotFoundException("This productItem's category not found in productItemService");
+
+            var result = this.mapper.Map<ProductItemResultDto>(productItem);
+            result.Variations = (await variationService.GetFeaturesOfProduct(categoryId, productItem.Id)).ToList();
+
+            resultProductItems.Add(result);
+        }
+
+        return resultProductItems.AsEnumerable();
     }
 }

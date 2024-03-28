@@ -3,7 +3,7 @@ using Service.DTOs.Users;
 
 namespace Service.DTOs.Payments.PaymentMethods;
 
-public class PaymentResultDto
+public class PaymentMethodResultDto
 {
     public long Id { get; set; }
     public UserResultDto User { get; set; }

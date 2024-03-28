@@ -1,6 +1,6 @@
 ﻿namespace Service.DTOs.Payments.PaymentMethods;
 
-public class PaymentUpdateDto
+public class PaymentMethodUpdateDto
 {
     public long Id { get; set; }
     public string Provider { get; set; }

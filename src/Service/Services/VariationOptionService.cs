@@ -39,7 +39,7 @@ public class VariationOptionService : IVariationOptionService
             ?? throw new NotFoundException($"This variation was not found with {dto.VariationId}");
 
         var existProductItem = await this.productItemRepository.GetAsync(c => c.Id.Equals(dto.ProductItemId))
-            ?? throw new NotFoundException($"This variation was not found with {dto.ProductItemId}");
+            ?? throw new NotFoundException($"This productItem was not found with {dto.ProductItemId}");
 
         var mappedVariationOption = this.mapper.Map<VariationOption>(dto);
 

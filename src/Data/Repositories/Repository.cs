@@ -37,7 +37,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
 
     public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, string[]? includes = null)
     {
-        IQueryable<TEntity> query = _dbSet.Where(e => !e.IsDeleted);
+        IQueryable<TEntity> query = _dbSet;
 
         if (includes is not null)
             foreach (var include in includes)
@@ -62,7 +62,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
         if (includes is not null)
             query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-        return query.Where(e => !e.IsDeleted);
+        return query;
     }
 
     public async Task SaveAsync()

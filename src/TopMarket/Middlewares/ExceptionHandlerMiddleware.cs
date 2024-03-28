@@ -24,7 +24,7 @@ namespace TopMarket.Middlewares
                 context.Response.StatusCode = ex.StatusCode;
                 await context.Response.WriteAsJsonAsync(new Response
                 {
-                    StatusCode = context.Response.StatusCode,
+                    StatusCode = ex.StatusCode,
                     Message = ex.Message,
                 });
             }
@@ -33,7 +33,7 @@ namespace TopMarket.Middlewares
                 context.Response.StatusCode = ex.StatusCode;
                 await context.Response.WriteAsJsonAsync(new Response
                 {
-                    StatusCode = context.Response.StatusCode,
+                    StatusCode = ex.StatusCode,
                     Message = ex.Message,
                 });
             }
@@ -42,7 +42,7 @@ namespace TopMarket.Middlewares
                 context.Response.StatusCode = ex.StatusCode;
                 await context.Response.WriteAsJsonAsync(new Response
                 {
-                    StatusCode = context.Response.StatusCode,
+                    StatusCode = ex.StatusCode,
                     Message = ex.Message,
                 });
             }

@@ -9,4 +9,5 @@ public interface IProductConfigurationService
     Task<bool> DeleteAsync(long id);
     Task<ProductConfigurationResultDto> GetByIdAsync(long id);
     Task<IEnumerable<ProductConfigurationResultDto>> GetAllAsync();
+    Task<IEnumerable<ProductConfigurationResultDto>> GetByProductItemIdAsync(long productItemId);
 }
