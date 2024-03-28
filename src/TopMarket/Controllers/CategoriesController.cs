@@ -15,12 +15,14 @@ public class CategoriesController : BaseController
 
     [HttpPost("create")]
     public async Task<IActionResult> PostAsync(CategoryCreationDto dto)
-        => Ok(new Response
+    {
+        return Ok(new Response
         {
             StatusCode = 200,
             Message = "Success",
             Data = await this.categoryService.CreateAsync(dto)
         });
+    }
 
 
     [HttpPut("update")]

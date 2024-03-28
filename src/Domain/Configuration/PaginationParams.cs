@@ -11,6 +11,4 @@ public class PaginationParams
         set { pageSize = value > maxSize ? maxSize : value; }
     }
     public int PageIndex { get; set; } = 1;
-    
-
 }

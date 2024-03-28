@@ -9,7 +9,7 @@ using TopMarket.Models;
 
 namespace TopMarket.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IAuthService authsService;
         public UserController(IAuthService authsService)

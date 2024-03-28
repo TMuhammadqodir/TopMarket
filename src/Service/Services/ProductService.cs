@@ -52,7 +52,7 @@ public class ProductService : IProductService
 
     public async Task<IEnumerable<ProductResultDto>> RetrieveAllAsync(PaginationParams? paginationParams = null)
     {
-        string[] inclusion = { "Category", "ProductAttachments.Attachment" };
+        string[] inclusion = { "Category", "ProductAttachments.Product" };
 
         IQueryable<Product> query = _repository.GetAll(includes: inclusion);
 
