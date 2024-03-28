@@ -12,7 +12,7 @@ using Service.Interfaces;
 using System.Linq.Expressions;
 
 namespace Service.Services;
-
+//salom
 public class ProductService : IProductService
 {
     private readonly IMapper _mapper;
