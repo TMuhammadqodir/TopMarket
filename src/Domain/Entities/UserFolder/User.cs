@@ -15,7 +15,7 @@ public class User : Auditable
     public string Phone { get; set; } = string.Empty;
     public byte[] PasswordHash { get; set; } = default!;
     public byte[] PasswordSalt { get; set; } = default!;
-    public UserRole UserRole { get; set; }
+    public EUserRole UserRole { get; set; }
     public ICollection<Order> Orders { get; set; }
     public ICollection<PaymentMethod> PaymentMethods { get; set; }
     public ICollection<UserAddress> UserAddresses { get; set; }

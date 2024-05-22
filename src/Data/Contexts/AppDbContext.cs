@@ -60,17 +60,15 @@ public class AppDbContext : DbContext
     {
         #region Define
         var addresses = modelBuilder.Entity<Address>();
+        var attachments = modelBuilder.Entity<Attachment>();
+        var categories = modelBuilder.Entity<Category>();
         var countries = modelBuilder.Entity<Country>();
         var districts = modelBuilder.Entity<District>();
-        var regions = modelBuilder.Entity<Region>();
-        var attachments = modelBuilder.Entity<Attachment>();
         var orders = modelBuilder.Entity<Order>();
         var orderLines = modelBuilder.Entity<OrderLine>();
         var orderStatuses = modelBuilder.Entity<OrderStatus>();
-        var shippingMethods = modelBuilder.Entity<ShippingMethod>();
         var paymentMethods = modelBuilder.Entity<PaymentMethod>();
         var paymentTypes = modelBuilder.Entity<PaymentType>();
-        var categories = modelBuilder.Entity<Category>();
         var products = modelBuilder.Entity<Product>();
         var productAttachments = modelBuilder.Entity<ProductAttachment>();
         var productConfigurations = modelBuilder.Entity<ProductConfiguration>();
@@ -78,28 +76,28 @@ public class AppDbContext : DbContext
         var productItemAttachments = modelBuilder.Entity<ProductItemAttachment>();
         var promotions = modelBuilder.Entity<Promotion>();
         var promotionCategories = modelBuilder.Entity<PromotionCategory>();
-        var variations = modelBuilder.Entity<Variation>();
-        var variationOptions = modelBuilder.Entity<VariationOption>();
+        var regions = modelBuilder.Entity<Region>();
+        var shippingMethods = modelBuilder.Entity<ShippingMethod>();
         var shoppingCarts = modelBuilder.Entity<ShoppingCart>();
         var shoppingCartItems = modelBuilder.Entity<ShoppingCartItem>();
         var users = modelBuilder.Entity<User>();
         var userAddresses = modelBuilder.Entity<UserAddress>();
         var userReviews = modelBuilder.Entity<UserReview>();
+        var variations = modelBuilder.Entity<Variation>();
+        var variationOptions = modelBuilder.Entity<VariationOption>();
         #endregion
 
         #region Filter
         addresses.HasQueryFilter(e => !e.IsDeleted);
+        attachments.HasQueryFilter(e => !e.IsDeleted);
+        categories.HasQueryFilter(e => !e.IsDeleted);
         countries.HasQueryFilter(e => !e.IsDeleted);
         districts.HasQueryFilter(e => !e.IsDeleted);
-        regions.HasQueryFilter(e => !e.IsDeleted);
-        attachments.HasQueryFilter(e => !e.IsDeleted);
         orders.HasQueryFilter(e => !e.IsDeleted);
         orderLines.HasQueryFilter(e => !e.IsDeleted);
         orderStatuses.HasQueryFilter(e => !e.IsDeleted);
-        shippingMethods.HasQueryFilter(e => !e.IsDeleted);
         paymentMethods.HasQueryFilter(e => !e.IsDeleted);
         paymentTypes.HasQueryFilter(e => !e.IsDeleted);
-        categories.HasQueryFilter(e => !e.IsDeleted);
         products.HasQueryFilter(e => !e.IsDeleted);
         productAttachments.HasQueryFilter(e => !e.IsDeleted);
         productConfigurations.HasQueryFilter(e => !e.IsDeleted);
@@ -107,17 +105,18 @@ public class AppDbContext : DbContext
         productItemAttachments.HasQueryFilter(e => !e.IsDeleted);
         promotions.HasQueryFilter(e => !e.IsDeleted);
         promotionCategories.HasQueryFilter(e => !e.IsDeleted);
-        variations.HasQueryFilter(e => !e.IsDeleted);
-        variationOptions.HasQueryFilter(e => !e.IsDeleted);
+        regions.HasQueryFilter(e => !e.IsDeleted);
         shoppingCarts.HasQueryFilter(e => !e.IsDeleted);
         shoppingCartItems.HasQueryFilter(e => !e.IsDeleted);
+        shippingMethods.HasQueryFilter(e => !e.IsDeleted);
         users.HasQueryFilter(e => !e.IsDeleted);
         userAddresses.HasQueryFilter(e => !e.IsDeleted);
         userReviews.HasQueryFilter(e => !e.IsDeleted);
+        variations.HasQueryFilter(e => !e.IsDeleted);
+        variationOptions.HasQueryFilter(e => !e.IsDeleted);
         #endregion
 
         #region Many to many relationship
-        
         // Users <=> Addresses
         userAddresses.HasKey(ua => new { ua.UserId, ua.AddressId });
         userAddresses.HasOne(ua => ua.User).WithMany(ua => ua.UserAddresses).HasForeignKey(ua => ua.UserId);
@@ -132,7 +131,6 @@ public class AppDbContext : DbContext
         promotionCategories.HasKey(pc => new { pc.PromotionId, pc.CategoryId });
         promotionCategories.HasOne(pc => pc.Promotion).WithMany(pc => pc.PromotionCategories).HasForeignKey(pc => pc.PromotionId);
         promotionCategories.HasOne(pc => pc.Category).WithMany(pc => pc.PromotionCategories).HasForeignKey(pc => pc.CategoryId);
-        
         #endregion
 
         #region FluentApi

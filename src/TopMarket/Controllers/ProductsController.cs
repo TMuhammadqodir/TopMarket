@@ -65,11 +65,11 @@ public class ProductsController : BaseController
 
 
     [HttpPost("image-upload")]
-    public async Task<IActionResult> ImageUploadAsync(long productId, [FromForm] AttachmentCreationDto dto)
+    public async Task<IActionResult> UploadImageAsync(long productId, [FromForm] AttachmentCreationDto dto)
         => Ok(new Response
         {
             StatusCode = 200,
             Message = "Success",
-            Data = await this.productService.ImageUploadAsync(productId, dto)
+            Data = await this.productService.UploadImageAsync(productId, dto)
         });
 }

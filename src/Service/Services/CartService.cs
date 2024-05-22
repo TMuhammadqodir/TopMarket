@@ -10,97 +10,107 @@ namespace Service.Services;
 
 public class CartService : ICartService
 {
-    private readonly IMapper _mapper;
-    private readonly IProductItemService _productItemService;
-    private readonly IRepository<ShoppingCart> _cartRepository;
-    private readonly IRepository<ShoppingCartItem> _cartItemRepository;
+    private readonly IMapper mapper;
+    private readonly IProductItemService productItemService;
+    private readonly IRepository<ShoppingCart> cartRepository;
+    private readonly IRepository<ShoppingCartItem> cartItemRepository;
 
     public CartService(IMapper mapper,
                        IRepository<ShoppingCart> cartRepository,
                        IRepository<ShoppingCartItem> cartItemRepository,
                        IProductItemService productItemService)
     {
-        _mapper = mapper;
-        _productItemService = productItemService;
-        _cartRepository = cartRepository;
-        _cartItemRepository = cartItemRepository;
+        this.mapper = mapper;
+        this.productItemService = productItemService;
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
-    public async Task<CartResultDto> AddItemToCartAsync(long productItemId, long cartId)
+    public async Task<CartResultDto> AddItemToCartAsync(
+        long productItemId,
+        long cartId,
+        CancellationToken cancellationToken = default)
     {
-        var items = await _cartItemRepository.GetAll(i => i.CartId.Equals(cartId), isNoTracked: false).ToListAsync()
+        var items = await this.cartItemRepository
+                .GetAll(i => i.CartId == cartId, isNoTracked: false)
+                .ToListAsync(cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"Cart with id = '{cartId}' is not found.");
         
-        var theProductItem = await _productItemService.GetByIdAsync(productItemId)
+        var productItem = await this.productItemService.GetByIdAsync(productItemId)
             ?? throw new NotFoundException($"ProductItem with id = '{productItemId}' is not found.");
 
-        var theCartItem = items.FirstOrDefault(i => i.ProductItemId.Equals(productItemId));
-        if (theCartItem is null)
+        var cartItem = items.FirstOrDefault(i => i.ProductItemId == productItemId);
+        if (cartItem is null)
             items.Add(new ShoppingCartItem
             {
                 CartId = cartId,
                 ProductItemId = productItemId,
                 Quantity = 1,
-                Price = theProductItem.Price,
+                Price = productItem.Price,
             });
         else
-            theCartItem.Quantity += 1;
+            cartItem.Quantity += 1;
     
-        await _cartItemRepository.SaveAsync();
+        await this.cartItemRepository.SaveAsync(cancellationToken);
 
-        var cart = await _cartRepository.GetAsync(cartId);
-        return _mapper.Map<CartResultDto>(cart);
+        var cart = await this.cartRepository.GetAsync(cartId, cancellationToken: cancellationToken);
+        return this.mapper.Map<CartResultDto>(cart);
     }
 
-    public async Task<CartResultDto> CreateAsync()
+    public async Task<CartResultDto> CreateAsync(CancellationToken cancellationToken = default)
     {
         var newCart = new ShoppingCart();
 
-        await _cartRepository.AddAsync(newCart);    
-        await _cartRepository.SaveAsync();
+        await this.cartRepository.AddAsync(newCart, cancellationToken);    
+        await this.cartRepository.SaveAsync(cancellationToken);
 
-        return _mapper.Map<CartResultDto>(newCart);
+        return this.mapper.Map<CartResultDto>(newCart);
     }
     
-    public async Task<bool> ClearCartAsync(long cartId)
+    public async Task<bool> ClearCartAsync(long cartId, CancellationToken cancellationToken = default)
     {
-        var items = await _cartItemRepository.GetAll(i => i.CartId.Equals(cartId), isNoTracked: false).ToListAsync()
+        var items = await this.cartItemRepository
+                .GetAll(i => i.CartId == cartId, isNoTracked: false)
+                .ToListAsync(cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"Cart with id = '{cartId}' is not found.");
         
         foreach (var item in items)
-            _cartItemRepository.Destroy(item);
+            this.cartItemRepository.Destroy(item);
         
-        await _cartItemRepository.SaveAsync();
+        await this.cartItemRepository.SaveAsync(cancellationToken);
 
         return true;
     }
 
-    public async Task<bool> RemoveFromCartAsync(long cartItemId)
+    public async Task<bool> RemoveFromCartAsync(long cartItemId, CancellationToken cancellationToken = default)
     {
-        var theItem = await _cartItemRepository.GetAsync(cartItemId)
+        var item = await this.cartItemRepository.GetAsync(cartItemId, cancellationToken: cancellationToken)
             ?? throw new NotFoundException("Cart item is not found.");
 
-        _cartItemRepository.Destroy(theItem);
-        await _cartItemRepository.SaveAsync();
+        this.cartItemRepository.Destroy(item);
+        await this.cartItemRepository.SaveAsync(cancellationToken);
 
         return true;
     }
 
-    public async Task<ICollection<CartItemResultDto>> RetrieveAllItemsAsync(long cartId)
+    public async Task<ICollection<CartItemResultDto>> RetrieveAllItemsAsync(long cartId, CancellationToken cancellationToken = default)
     {
-        var items = await _cartItemRepository.GetAll(i => i.CartId.Equals(cartId)).ToListAsync();
-        return _mapper.Map<ICollection<CartItemResultDto>>(items);
+        var items = await this.cartItemRepository
+                .GetAll(i => i.CartId == cartId)
+                .ToListAsync(cancellationToken: cancellationToken);
+        return this.mapper.Map<ICollection<CartItemResultDto>>(items);
     }
 
-    public async Task<CartItemResultDto> UpdateItemQuantityAsync(CartItemUpdateDto dto)
+    public async Task<CartItemResultDto> UpdateItemQuantityAsync(CartItemUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        var theItem = await _cartItemRepository.GetAsync(dto.Id)
+        var item = await this.cartItemRepository
+                .GetAsync(dto.Id, cancellationToken: cancellationToken)
             ?? throw new NotFoundException("Product is not found.");
        
-        _mapper.Map(dto, theItem);
-        theItem.Quantity = dto.Quantity;
-        await _cartItemRepository.SaveAsync();
+        this.mapper.Map(dto, item);
+        item.Quantity = dto.Quantity;
+        await this.cartItemRepository.SaveAsync(cancellationToken);
 
-        return _mapper.Map<CartItemResultDto>(theItem);
+        return this.mapper.Map<CartItemResultDto>(item);
     }
 }

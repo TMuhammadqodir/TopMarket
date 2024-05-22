@@ -1,7 +1,5 @@
 ﻿using Service.DTOs.Attachments;
 using Service.DTOs.ProductItems;
-using Service.DTOs.Products;
-using Service.DTOs.Variations;
 
 namespace Service.Interfaces;
 

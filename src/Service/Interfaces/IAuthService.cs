@@ -14,5 +14,5 @@ public interface IAuthService
     Task<bool> DestroyAsync(long id);
     Task<UserResultDto> GetByIdAsync(long id);
     Task<IEnumerable<UserResultDto>> GetAllAsync();
-    Task<bool> UserUpdateRole(long id, UserRole role);
+    Task<bool> UserUpdateRole(long id, EUserRole role);
 }

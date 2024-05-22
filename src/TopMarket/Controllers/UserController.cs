@@ -9,7 +9,7 @@ using TopMarket.Models;
 
 namespace TopMarket.Controllers
 {
-    public class UserController : BaseController
+    public class UserController : Controller
     {
         private readonly IAuthService authsService;
         public UserController(IAuthService authsService)
@@ -41,7 +41,7 @@ namespace TopMarket.Controllers
         {
             long id = Convert.ToInt32(HttpContext.User.FindFirstValue("id"));
             var role = Convert.ToInt32(HttpContext.User.FindFirstValue("Role"));
-            UserRole user = (UserRole)role;
+            EUserRole user = (EUserRole)role;
 
             var update = new UserUpdateDto()
             {
@@ -154,7 +154,7 @@ namespace TopMarket.Controllers
         [Authorize(Roles = "SuperAdmin")]
         [HttpPost("update-role")]
 
-        public async Task<IActionResult> UpdateUserRole(long id, UserRole role)
+        public async Task<IActionResult> UpdateUserRole(long id, EUserRole role)
             => Ok(new Response
             {
                 StatusCode = 200,
