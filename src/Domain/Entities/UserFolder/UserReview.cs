@@ -12,6 +12,6 @@ public class UserReview : Auditable
     public long OrderLineId { get; set; }
     public OrderLine OrderLine { get; set; } = default!;
 
-    public Rating RatingValue { get; set; } 
+    public ERating RatingValue { get; set; } 
     public string Comment { get; set; } = string.Empty;
 }
