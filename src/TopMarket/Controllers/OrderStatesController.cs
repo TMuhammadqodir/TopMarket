@@ -29,7 +29,7 @@ public class OrderStatesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.orderStatusService.UpdateAsync(dto)
+           Data = await this.orderStatusService.ModifyAsync(dto)
        });
 
 
@@ -39,7 +39,7 @@ public class OrderStatesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.orderStatusService.DeleteAsync(id)
+           Data = await this.orderStatusService.RemoveAsync(id)
        });
 
 
@@ -49,7 +49,7 @@ public class OrderStatesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.orderStatusService.GetByIdAsync(id)
+           Data = await this.orderStatusService.RetrieveByIdAsync(id)
        });
 
 
@@ -59,6 +59,6 @@ public class OrderStatesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.orderStatusService.GetAllAsync()
+           Data = await this.orderStatusService.RetrieveAllAsync()
        });
 }

@@ -5,14 +5,14 @@ namespace Service.Interfaces;
 
 public interface IProductItemService
 {
-    Task<ProductItemResultDto> CreateAsync(ProductItemCreationDto dto);
-    Task<ProductItemResultDto> AddAsync(ProductItemIncomeDto dto);
-    Task<ProductItemResultDto> SubstractAsync(ProductItemIncomeDto dto);
-    Task<ProductItemResultDto> UpdateAsync(ProductItemUpdateDto dto);
-    Task<bool> DeleteAsync(long id);
-    Task<ProductItemResultDto> GetByIdAsync(long id);
-    Task<IEnumerable<ProductItemResultDto>> GetAllAsync();
-    Task<IEnumerable<ProductItemResultDto>> GetByProductIdAsync(long productId);
-    Task<ProductItemResultDto> AddImageAsync(long productItemId, AttachmentCreationDto dto);
-    Task<bool> DeleteImageAsync(long productItemId, long imageId);
+    Task<ProductItemResultDto> CreateAsync(ProductItemCreationDto dto, CancellationToken cancellationToken = default);
+    Task<ProductItemResultDto> ModifyAsync(ProductItemUpdateDto dto, CancellationToken cancellationToken = default);
+    Task<bool> RemoveAsync(long id, bool destroy = false, CancellationToken cancellationToken = default);
+    Task<ProductItemResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ProductItemResultDto>> RetrieveAllAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<ProductItemResultDto>> RetrieveByProductIdAsync(long productId, CancellationToken cancellationToken = default);
+    Task<ProductItemResultDto> AddAsync(ProductItemIncomeDto dto, CancellationToken cancellationToken = default);
+    Task<ProductItemResultDto> SubstractAsync(ProductItemIncomeDto dto, CancellationToken cancellationToken = default);
+    Task<ProductItemResultDto> UploadImageAsync(long productItemId, AttachmentCreationDto dto, CancellationToken cancellationToken = default);
+    Task<bool> RemoveImageAsync(long productItemId, long imageId, CancellationToken cancellationToken = default);
 }

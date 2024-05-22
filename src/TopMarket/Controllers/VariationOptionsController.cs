@@ -29,7 +29,7 @@ public class VariationOptionsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.variationOptionService.UpdateAsync(dto)
+           Data = await this.variationOptionService.ModifyAsync(dto)
        });
 
 
@@ -39,7 +39,7 @@ public class VariationOptionsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.variationOptionService.DeleteAsync(id)
+           Data = await this.variationOptionService.RemoveAsync(id)
        });
 
 
@@ -49,7 +49,7 @@ public class VariationOptionsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.variationOptionService.GetByIdAsync(id)
+           Data = await this.variationOptionService.RetrieveByIdAsync(id)
        });
 
 
@@ -59,6 +59,6 @@ public class VariationOptionsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.variationOptionService.GetAllAsync()
+           Data = await this.variationOptionService.RetrieveAllAsync()
        });
 }

@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Data.IRepositories;
 using Domain.Entities.OrderFolder;
-using Domain.Entities.ProductFolder;
 using Microsoft.EntityFrameworkCore;
-using Service.DTOs.Categories;
+using Microsoft.Extensions.Logging;
 using Service.DTOs.OrderStates;
 using Service.Exceptions;
 using Service.Interfaces;
@@ -12,15 +11,20 @@ namespace Service.Services;
 
 public class OrderStatusService : IOrderStatusService
 {
+    private readonly ILogger<OrderStatusService> logger;
     private readonly IMapper mapper;
     private readonly IRepository<OrderStatus> repository;
-    public OrderStatusService(IMapper mapper, IRepository<OrderStatus> repository)
+    public OrderStatusService(
+        ILogger<OrderStatusService> logger,
+        IMapper mapper,
+        IRepository<OrderStatus> repository)
     {
+        this.logger = logger;
         this.mapper = mapper;
         this.repository = repository;
     }
 
-    public async Task<OrderStatusResultDto> CreateAsync(OrderStatusCreationDto dto)
+    public async Task<OrderStatusResultDto> CreateAsync(OrderStatusCreationDto dto, CancellationToken cancellationToken = default)
     {
         var existOrderStatus = await this.repository.GetAsync(c => c.Name.ToLower().Equals(dto.Name.ToLower()));
         if (existOrderStatus is not null)
@@ -34,48 +38,58 @@ public class OrderStatusService : IOrderStatusService
         return this.mapper.Map<OrderStatusResultDto>(mappedOrderStatus);
     }
 
-    public async Task<OrderStatusResultDto> UpdateAsync(OrderStatusUpdateDto dto)
+    public async Task<OrderStatusResultDto> ModifyAsync(OrderStatusUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        var existOrderStatus = await this.repository.GetAsync(c => c.Id.Equals(dto.Id))
-            ?? throw new NotFoundException($"This orderStatus was not found with {dto.Id}");
-
-        if (!existOrderStatus.Name.Equals(dto.Name, StringComparison.OrdinalIgnoreCase))
-        {
-            var existOrderStatusName = await this.repository.GetAsync(c => c.Name.ToLower().Equals(dto.Name.ToLower()));
-            if (existOrderStatusName is not null)
-                throw new AlreadyExistException($"This orderStatus already exist with {dto.Name}");
-        }
-
-        var mappedOrderStatus = this.mapper.Map(dto, existOrderStatus);
+        var orderStatus = await this.repository.GetAsync(dto.Id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"OrderStatus with id = {dto.Id} is not found.");
+        
+        var mappedOrderStatus = this.mapper.Map(dto, orderStatus);
 
         this.repository.Update(mappedOrderStatus);
-        await this.repository.SaveAsync();
+        await this.repository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<OrderStatusResultDto>(mappedOrderStatus);
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<bool> RemoveAsync(long id, bool destroy = false, CancellationToken cancellationToken = default)
     {
-        var existOrderStatus = await this.repository.GetAsync(c => c.Id.Equals(id))
-            ?? throw new NotFoundException($"This orderStatus was not found with {id}");
+        var orderStatus = await this.repository.GetAsync(id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"OrderStatus with id = {id} is not found.");
 
-        this.repository.Delete(existOrderStatus);
-        await this.repository.SaveAsync();
-
-        return true;
+        try
+        {
+            if (destroy)
+                this.repository.Destroy(orderStatus);
+            else
+                this.repository.Delete(orderStatus);
+            
+            await this.repository.SaveAsync(cancellationToken);
+            this.logger.LogInformation("OrderStatus has been successfully {action}.", destroy ? "destroyed" : "deleted");
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError("OrderStatus has NOT been deleted. See details {@exception}", ex);
+            return false;
+        }
     }
 
-    public async Task<OrderStatusResultDto> GetByIdAsync(long id)
+    public async Task<OrderStatusResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existOrderStatus = await this.repository.GetAsync(c => c.Id.Equals(id))
-            ?? throw new NotFoundException($"This orderStatus was not found with {id}");
+        var inclusion = new string[] { };
 
-        return this.mapper.Map<OrderStatusResultDto>(existOrderStatus);
+        var orderStatus = await this.repository.GetAsync(id, inclusion, cancellationToken)
+            ?? throw new NotFoundException($"OrderStatus with id = {id} is not found.");
+
+        return this.mapper.Map<OrderStatusResultDto>(orderStatus);
     }
 
-    public async Task<IEnumerable<OrderStatusResultDto>> GetAllAsync()
+    public async Task<IEnumerable<OrderStatusResultDto>> RetrieveAllAsync(CancellationToken cancellationToken = default)
     {
-        var categories = await this.repository.GetAll().ToListAsync();
+        var categories = await this.repository
+                .GetAll()
+                .ToListAsync(cancellationToken: cancellationToken);
 
         return this.mapper.Map<IEnumerable<OrderStatusResultDto>>(categories);
     }

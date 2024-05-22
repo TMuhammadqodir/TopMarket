@@ -2,6 +2,7 @@
 using Data.IRepositories;
 using Domain.Entities.ProductFolder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Service.DTOs.ProductConfigurations;
 using Service.DTOs.VariationOptions;
 using Service.Exceptions;
@@ -11,90 +12,106 @@ namespace Service.Services;
 
 public class VariationOptionService : IVariationOptionService
 {
+    private readonly ILogger<VariationOptionService> logger;
     private readonly IMapper mapper;
     private readonly IRepository<VariationOption> repository;
     private readonly IRepository<Variation> variationRepository;
-    private readonly IRepository<ProductItem> productItemRepository;
     private readonly IProductConfigurationService productConfigurationService;
     private readonly IRepository<ProductConfiguration> productConfigurationRepository;
     public VariationOptionService(
+        ILogger<VariationOptionService> logger,
         IMapper mapper,
         IRepository<VariationOption> repository,
         IRepository<Variation> variationRepository,
-        IRepository<ProductItem> productItemRepository,
         IProductConfigurationService productConfigurationService,
         IRepository<ProductConfiguration> productConfigurationRepository)
     {
+        this.logger = logger;
         this.mapper = mapper;
         this.repository = repository;
         this.variationRepository = variationRepository;
-        this.productItemRepository = productItemRepository;
         this.productConfigurationService = productConfigurationService;
         this.productConfigurationRepository = productConfigurationRepository;
     }
 
-    public async Task<VariationOptionResultDto> CreateAsync(VariationOptionCreationDto dto)
+    public async Task<VariationOptionResultDto> CreateAsync(VariationOptionCreationDto dto, CancellationToken cancellationToken = default)
     {
-        var existVariation = await this.variationRepository.GetAsync(c => c.Id.Equals(dto.VariationId))
-            ?? throw new NotFoundException($"This variation was not found with {dto.VariationId}");
-
-        var existProductItem = await this.productItemRepository.GetAsync(c => c.Id.Equals(dto.ProductItemId))
-            ?? throw new NotFoundException($"This productItem was not found with {dto.ProductItemId}");
+        var variation = await this.variationRepository.GetAsync(dto.VariationId, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"Variation with id = {dto.VariationId} is not found.");
 
         var mappedVariationOption = this.mapper.Map<VariationOption>(dto);
 
-        await this.repository.AddAsync(mappedVariationOption);
-        await this.repository.SaveAsync();
+        await this.repository.AddAsync(mappedVariationOption, cancellationToken);
+        await this.repository.SaveAsync(cancellationToken);
 
-        mappedVariationOption.Variation = existVariation;
+        mappedVariationOption.Variation = variation;
 
-        var productConfiguration = new ProductConfigurationCreationDto() {
+        var productConfiguration = new ProductConfigurationCreationDto()
+        {
             ProductItemId = dto.ProductItemId,
             VariationOptionId = mappedVariationOption.Id
         };
-        await this.productConfigurationService.CreateAsync(productConfiguration);
+        await this.productConfigurationService.CreateAsync(productConfiguration); //TODO need to add cancellationToken to this method
 
         return this.mapper.Map<VariationOptionResultDto>(mappedVariationOption);
     }
 
-    public async Task<VariationOptionResultDto> UpdateAsync(VariationOptionUpdateDto dto)
+    public async Task<VariationOptionResultDto> ModifyAsync(VariationOptionUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        var existVariationOption = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), includes: new[] { "Variation" })
-            ?? throw new NotFoundException($"This variationOption was not found with {dto.Id}");
+        var variationOption = await this.repository.GetAsync(dto.Id, includes: new[] { "Variation" }, cancellationToken)
+            ?? throw new NotFoundException($"Variation option with id = {dto.Id} is not found.");
 
-        var mappedVariationOption = this.mapper.Map(dto, existVariationOption);
+        var mappedVariationOption = this.mapper.Map(dto, variationOption);
 
         this.repository.Update(mappedVariationOption);
-        await this.repository.SaveAsync();
+        await this.repository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<VariationOptionResultDto>(mappedVariationOption);
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<bool> RemoveAsync(long id, bool destroy = false, CancellationToken cancellationToken = default)
     {
-        var existVariationOption = await this.repository.GetAsync(c => c.Id.Equals(id))
-            ?? throw new NotFoundException($"This variationOption was not found with {id}");
+        var variationOption = await this.repository.GetAsync(id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"Variation option with id = {id} is not found.");
 
-        var productConfiguration = await productConfigurationRepository.GetAsync(p => p.VariationOptionId.Equals(id));
+        var productConfiguration = await productConfigurationRepository.GetAsync(id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"Product configuration with id = {id} is not found."); ;
 
-        this.repository.Delete(existVariationOption);
-        await this.repository.SaveAsync();
+        try
+        {
+            if (destroy) 
+                this.repository.Destroy(variationOption);
+            else
+                this.repository.Delete(variationOption);
 
-        await productConfigurationService.DeleteAsync(productConfiguration.Id);
-        return true;
+            await this.repository.SaveAsync(cancellationToken);
+            await productConfigurationService.DeleteAsync(productConfiguration.Id);
+
+            this.logger.LogInformation("Variation option has been successfully {action}", destroy ? "destroyed" : "deleted");
+            
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError("Variation option has NOT been deleted. See details: {@exception}", ex);
+            return false;
+        }
     }
 
-    public async Task<VariationOptionResultDto> GetByIdAsync(long id)
+    public async Task<VariationOptionResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existVariationOption = await this.repository.GetAsync(c => c.Id.Equals(id), includes: new[] { "Variation" })
-            ?? throw new NotFoundException($"This variationOption was not found with {id}");
+        var variationOption = await this.repository.GetAsync(id, includes: new[] { "Variation" }, cancellationToken)
+            ?? throw new NotFoundException($"Variation option with id = {id} is not found.");
 
-        return this.mapper.Map<VariationOptionResultDto>(existVariationOption);
+        return this.mapper.Map<VariationOptionResultDto>(variationOption);
     }
 
-    public async Task<IEnumerable<VariationOptionResultDto>> GetAllAsync()
+    public async Task<IEnumerable<VariationOptionResultDto>> RetrieveAllAsync(CancellationToken cancellationToken = default)
     {
-        var variationOptions = await this.repository.GetAll(includes: new[] { "Variation" }).ToListAsync();
+        var variationOptions = await this.repository
+                .GetAll(includes: new[] { "Variation" })
+                .ToListAsync(cancellationToken);
 
         return this.mapper.Map<IEnumerable<VariationOptionResultDto>>(variationOptions);
     }
