@@ -78,7 +78,7 @@ public class ProductItemService : IProductItemService
             ?? throw new NotFoundException($"This product was not found with {dto.Id}");
 
         if (existProductItem.QuantityInStock < dto.QuantityInStock)
-            throw new CustomException(400,"ProductItem quantity is not enough");
+            throw new CustomException(400, "ProductItem quantity is not enough");
 
         existProductItem.QuantityInStock -= dto.QuantityInStock;
 

@@ -11,39 +11,39 @@ public interface ICartService
     /// <param name="cartId">ShoppingCart.Id</param>
     /// <param name="productItemId">ProductItem.Id</param>
     /// <returns></returns>
-    Task<CartResultDto> AddItemToCartAsync(long productItemId, long cartId);
+    Task<CartResultDto> AddItemToCartAsync(long productItemId, long cartId, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Clears the cart totally.
     /// </summary>
     /// <param name="cartId">ShoppingCart.Id</param>
     /// <returns>bool</returns>
-    Task<bool> ClearCartAsync(long cartId);
+    Task<bool> ClearCartAsync(long cartId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new shopping cart.
     /// </summary>
     /// <returns>CartResultDto</returns>
-    Task<CartResultDto> CreateAsync();
+    Task<CartResultDto> CreateAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Removes the asked item from the cart.
     /// </summary>
     /// <param name="cartItemId"></param>
     /// <returns>bool</returns>
-    Task<bool> RemoveFromCartAsync(long cartItemId);
+    Task<bool> RemoveFromCartAsync(long cartItemId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns all items within the cart.
     /// </summary>
     /// <param name="cartId">ShoppingCart.Id</param>
     /// <returns>List of CartItems</returns>
-    Task<ICollection<CartItemResultDto>> RetrieveAllItemsAsync(long cartId);
+    Task<ICollection<CartItemResultDto>> RetrieveAllItemsAsync(long cartId, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Updates actual quantity of the cart item in database.
     /// </summary>
     /// <param name="dto"></param>
     /// <returns>Cart item result itself</returns>
-    Task<CartItemResultDto> UpdateItemQuantityAsync(CartItemUpdateDto dto);
+    Task<CartItemResultDto> UpdateItemQuantityAsync(CartItemUpdateDto dto, CancellationToken cancellationToken = default);
 }

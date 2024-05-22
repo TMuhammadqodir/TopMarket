@@ -42,7 +42,7 @@ public class AuthService : IAuthService
         
         mapped.PasswordSalt= salt;
         mapped.PasswordHash= passwordhash;
-        mapped.UserRole = UserRole.Customer;
+        mapped.UserRole = EUserRole.Customer;
         mapped.CartId = (await this.cartService.CreateAsync()).Id;
 
         await this.repository.AddAsync(mapped);
@@ -134,7 +134,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-    public async Task<bool> UserUpdateRole(long id, UserRole role)
+    public async Task<bool> UserUpdateRole(long id, EUserRole role)
     {
         User? user = await this.repository.GetAsync(id)
             ?? throw new NotFoundException("User not found");
