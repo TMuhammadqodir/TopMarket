@@ -9,5 +9,5 @@ public class UserUpdateDto
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
-    public UserRole UserRole { get; set; }
+    public EUserRole UserRole { get; set; }
 }
