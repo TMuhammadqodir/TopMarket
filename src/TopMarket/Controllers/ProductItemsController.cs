@@ -50,7 +50,7 @@ public class ProductItemsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.productItemService.UpdateAsync(dto)
+           Data = await this.productItemService.ModifyAsync(dto)
        });
 
 
@@ -60,7 +60,7 @@ public class ProductItemsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.productItemService.DeleteAsync(id)
+           Data = await this.productItemService.RemoveAsync(id)
        });
 
 
@@ -70,7 +70,7 @@ public class ProductItemsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.productItemService.GetByIdAsync(id)
+           Data = await this.productItemService.RetrieveByIdAsync(id)
        });
 
 
@@ -80,7 +80,7 @@ public class ProductItemsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.productItemService.GetByProductIdAsync(productId)
+           Data = await this.productItemService.RetrieveByProductIdAsync(productId)
        });
 
 
@@ -90,7 +90,7 @@ public class ProductItemsController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.productItemService.GetAllAsync()
+           Data = await this.productItemService.RetrieveAllAsync()
        });
 
 
@@ -100,7 +100,7 @@ public class ProductItemsController : BaseController
         {
             StatusCode = 200,
             Message = "Success",
-            Data = await this.productItemService.AddImageAsync(productItemId, dto)
+            Data = await this.productItemService.UploadImageAsync(productItemId, dto)
         });
 
     [HttpDelete("delete-image")]
@@ -109,6 +109,6 @@ public class ProductItemsController : BaseController
         {
             StatusCode = 200,
             Message = "Success",
-            Data = await this.productItemService.DeleteImageAsync(imageId, productItemId)
+            Data = await this.productItemService.RemoveImageAsync(imageId, productItemId)
         });
 }

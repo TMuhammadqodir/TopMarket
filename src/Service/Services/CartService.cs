@@ -36,7 +36,7 @@ public class CartService : ICartService
                 .ToListAsync(cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"Cart with id = '{cartId}' is not found.");
         
-        var productItem = await this.productItemService.GetByIdAsync(productItemId)
+        var productItem = await this.productItemService.RetrieveByIdAsync(productItemId)
             ?? throw new NotFoundException($"ProductItem with id = '{productItemId}' is not found.");
 
         var cartItem = items.FirstOrDefault(i => i.ProductItemId == productItemId);
