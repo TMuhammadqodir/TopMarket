@@ -46,7 +46,7 @@ public class OrderService : IOrderService
             throw new CustomException(StatusCodes.Status409Conflict, ex.Message);
         }
     }
-    public async Task<OrderResultDto> UpdateAsync(OrderUpdateDto dto, CancellationToken cancellationToken = default)
+    public async Task<OrderResultDto> ModifyAsync(OrderUpdateDto dto, CancellationToken cancellationToken = default)
     {
         var order = await this.repository.GetAsync(dto.Id, cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"Order with id = {dto.Id} is not found.");
@@ -60,7 +60,7 @@ public class OrderService : IOrderService
         return this.mapper.Map<OrderResultDto>(order);
     }
 
-    public async Task<bool> DeleteAsync(long id, bool destroy = false, CancellationToken cancellationToken = default)
+    public async Task<bool> RemoveAsync(long id, bool destroy = false, CancellationToken cancellationToken = default)
     {
         var order = await this.repository.GetAsync(id, cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"Order with id = {id} is not found.");
@@ -83,7 +83,7 @@ public class OrderService : IOrderService
         }
     }
 
-    public async Task<IEnumerable<OrderResultDto>> GetAllAsync(PaginationParams? paginationParams = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<OrderResultDto>> RetrieveAllAsync(PaginationParams? paginationParams = null, CancellationToken cancellationToken = default)
     {
         var inclusion = new string[] { };
 
@@ -97,7 +97,7 @@ public class OrderService : IOrderService
         return this.mapper.Map<IEnumerable<OrderResultDto>>(orders);
     }
 
-    public async Task<OrderResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+    public async Task<OrderResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
         var inclusion = new string[] { };
 
