@@ -1,57 +1,54 @@
-﻿using Data.IRepositories;
+﻿using Data.Contexts;
+using Data.IRepositories;
 using Domain.Commons;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System;
-using Data.Contexts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Linq.Expressions;
 
 namespace Data.Repositories;
 
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditable
 {
-    private readonly AppDbContext _dbContext;
-    private readonly DbSet<TEntity> _dbSet;
+    private readonly AppDbContext dbContext;
+    private readonly DbSet<TEntity> dbSet;
     
     public Repository(AppDbContext appDbContext)
     {
-        _dbContext = appDbContext;
-        _dbSet = _dbContext.Set<TEntity>();
+        this.dbContext = appDbContext;
+        this.dbSet = this.dbContext.Set<TEntity>();
     }
 
-    public async Task AddAsync(TEntity entity)
-        => await _dbSet.AddAsync(entity);
+    public async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        => await this.dbSet.AddAsync(entity, cancellationToken);
 
     public void Update(TEntity entity)
     {
         entity.UpdatetAt = DateTime.UtcNow;
-        _dbContext.Entry(entity).State = EntityState.Modified;
+        this.dbContext.Entry(entity).State = EntityState.Modified;
     }
 
     public void Delete(TEntity entity)
         => entity.IsDeleted = true;
 
     public void Destroy(TEntity entity)
-        => _dbContext.Entry(entity).State = EntityState.Deleted;
+        => this.dbContext.Entry(entity).State = EntityState.Deleted;
 
-    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, string[]? includes = null)
+    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, string[]? includes = null, CancellationToken cancellationToken = default)
     {
-        IQueryable<TEntity> query = _dbSet;
+        IQueryable<TEntity> query = dbSet;
 
         if (includes is not null)
             foreach (var include in includes)
                 query = query.Include(include);
 
-        return await query.FirstOrDefaultAsync(expression);
+        return await query.FirstOrDefaultAsync(expression, cancellationToken: cancellationToken);
     }
 
-    public async Task<TEntity?> GetAsync(long id, string[]? includes = null)
-        => await this.GetAsync(e => e.Id.Equals(id), includes);
+    public async Task<TEntity?> GetAsync(long id, string[]? includes = null, CancellationToken cancellationToken = default)
+        => await this.GetAsync(e => e.Id.Equals(id), includes, cancellationToken);
 
     public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>>? expression = null, bool isNoTracked = true, string[]? includes = null)
     {
-        IQueryable<TEntity> query = _dbSet;
+        IQueryable<TEntity> query = dbSet;
 
         if (expression is not null)
             query = query.Where(expression);
@@ -65,6 +62,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
         return query;
     }
 
-    public async Task SaveAsync()
-        => await _dbContext.SaveChangesAsync();
+    public async Task SaveAsync(CancellationToken cancellationToken = default)
+        => await this.dbContext.SaveChangesAsync(cancellationToken);
 }
