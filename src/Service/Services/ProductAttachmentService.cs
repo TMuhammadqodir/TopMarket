@@ -78,7 +78,7 @@ public class ProductAttachmentService : IProductAttachmentService
 
     public async Task<bool> DeleteAsync(long productId, long attachmentId,CancellationToken cancellationToken)
     {
-        var existProductAttachment = await this.productAttachmentRepository.GetAsync(par => par.ProductId.Equals(productId)&&p.AttachmentId.Equals(attachmentId))
+        var existProductAttachment = await this.productAttachmentRepository.GetAsync(par => par.ProductId.Equals(productId)&& par.AttachmentId.Equals(attachmentId))
             ?? throw new NotFoundException($"This productAttachment was not found");
 
         this.productAttachmentRepository.Delete(existProductAttachment);
