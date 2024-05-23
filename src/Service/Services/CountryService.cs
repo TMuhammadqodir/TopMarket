@@ -16,16 +16,16 @@ public class CountryService:ICountryService
 {
 
     private readonly IMapper mapper;
-    private readonly IRepository<Country> repository;
-    public CountryService(IMapper mapper, IRepository<Country> repository)
+    private readonly IRepository<Country> countryRepository;
+    public CountryService(IMapper mapper, IRepository<Country> countryRepository)
     {
         this.mapper = mapper;
-        this.repository = repository;
+        this.countryRepository = countryRepository;
     }
 
     public async Task<bool> SetAsync(CancellationToken cancellationToken = default)
     {
-        var dbSource = this.repository.GetAll();
+        var dbSource = this.countryRepository.GetAll();
         if (dbSource.Any())
             throw new AlreadyExistException("Countries are already exist");
 
@@ -36,15 +36,15 @@ public class CountryService:ICountryService
         foreach (var country in countries)
         {
             var mappedCountry = this.mapper.Map<Country>(country);
-            await this.repository.AddAsync(mappedCountry);
-            await this.repository.SaveAsync(cancellationToken);
+            await this.countryRepository.AddAsync(mappedCountry);
+            await this.countryRepository.SaveAsync(cancellationToken);
         }
         return true;
     }
 
     public async Task<CountryResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var country = await this.repository.GetAsync(r => r.Id.Equals(id), cancellationToken: cancellationToken)
+        var country = await this.countryRepository.GetAsync(cr => cr.Id.Equals(id), cancellationToken: cancellationToken)
             ?? throw new NotFoundException("This country is not found");
 
         var mappedCountry = this.mapper.Map<CountryResultDto>(country);
@@ -54,7 +54,7 @@ public class CountryService:ICountryService
     public async Task<IEnumerable<CountryResultDto>> RetrieveAllAsync(PaginationParams @params, 
         CancellationToken cancellationToken = default)
     {
-        var countries = await this.repository.GetAll()
+        var countries = await this.countryRepository.GetAll()
             .ToPaginate(@params)
             .ToListAsync(cancellationToken);
 
