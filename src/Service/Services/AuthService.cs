@@ -23,14 +23,17 @@ public class AuthService : IAuthService
     private readonly IRepository<User> repository;
     private readonly ICartService cartService;
 
-    public AuthService(IRepository<User> repository, IMapper mapper, IConfiguration configuration, ICartService cartService)
+    public AuthService(IRepository<User> repository,
+                       IMapper mapper, 
+                       IConfiguration configuration, 
+                       ICartService cartService)
     {
         this.repository = repository;
         this.mapper = mapper;
         this.configuration = configuration;
         this.cartService = cartService;
     }
-    public async Task<UserResultDto> RegisterAsync(UserCreationDto dto)
+    public async Task<UserResultDto> RegisterAsync(UserCreationDto dto,CancellationToken cancellationToken=default)
     {
         User? user = await this.repository.GetAsync(x => x.Phone.Equals(dto.Phone));
         if (user is not null)
@@ -46,13 +49,13 @@ public class AuthService : IAuthService
         mapped.CartId = (await this.cartService.CreateAsync()).Id;
 
         await this.repository.AddAsync(mapped);
-        await this.repository.SaveAsync();
+        await this.repository.SaveAsync(cancellationToken);
 
         var result = this.mapper.Map<UserResultDto>(mapped);
         return result;
     }
 
-    public async Task<string> LoginAsync(UserLoginDto dto)
+    public async Task<string> LoginAsync(UserLoginDto dto, CancellationToken cancellationToken = default)
     {
         User? user = await this.repository.GetAsync(x => x.Phone.Equals(dto.Phone))
             ?? throw new NotFoundException("This nomber not found");
@@ -79,7 +82,7 @@ public class AuthService : IAuthService
         return result;
     }
 
-    public async Task<bool> ChangePasswordAsync(UserChangePassword dto)
+    public async Task<bool> ChangePasswordAsync(UserChangePassword dto, CancellationToken cancellationToken = default)
     {
         User? user= await this.repository.GetAsync(x => x.Id.Equals(dto.UserId))
             ?? throw new NotFoundException("User not found");
@@ -94,7 +97,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-    public async Task<UserResultDto> UpdateAsync(UserUpdateDto dto)
+    public async Task<UserResultDto> UpdateAsync(UserUpdateDto dto, CancellationToken cancellationToken = default)
     {
         User? user = await this.repository.GetAsync(dto.Id)
             ?? throw new NotFoundException("User not Found");
@@ -107,16 +110,16 @@ public class AuthService : IAuthService
         var result = this.mapper.Map<UserResultDto>(mapped);
         return result;
     }
-    public async Task<UserResultDto> GetByIdAsync(long id)
+    public async Task<UserResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        User? user = await this.repository.GetAsync(id)
+        User? user = await this.repository.GetAsync(id, cancellationToken: cancellationToken)
             ?? throw new NotFoundException("User not found");
 
         var result = mapper.Map<UserResultDto>(user);
         return result;
     }
 
-    public async Task<IEnumerable<UserResultDto>> GetAllAsync()
+    public async Task<IEnumerable<UserResultDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var users = await this.repository.GetAll().ToListAsync();
 
@@ -124,7 +127,7 @@ public class AuthService : IAuthService
         return result;
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken= default)
     {
         User? user = await  this.repository.GetAsync(id)
             ?? throw new NotFoundException("User not found");
@@ -134,7 +137,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-    public async Task<bool> UserUpdateRole(long id, EUserRole role)
+    public async Task<bool> UserUpdateRole(long id, EUserRole role, CancellationToken cancellationToken= default)
     {
         User? user = await this.repository.GetAsync(id)
             ?? throw new NotFoundException("User not found");
@@ -145,7 +148,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-    public async Task<bool> DestroyAsync(long id)
+    public async Task<bool> DestroyAsync(long id, CancellationToken cancellationToken= default)
     {
         User? user = await repository.GetAsync(id)
             ?? throw new NotFoundException("User not found");

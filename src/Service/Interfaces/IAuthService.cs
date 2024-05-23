@@ -6,13 +6,13 @@ namespace Service.Interfaces;
 
 public interface IAuthService
 {
-    Task<UserResultDto> RegisterAsync(UserCreationDto dto);
-    Task<string> LoginAsync(UserLoginDto dto);
-    Task<bool> ChangePasswordAsync(UserChangePassword dto);
-    Task<UserResultDto> UpdateAsync(UserUpdateDto dto);
-    Task<bool> DeleteAsync(long id);
-    Task<bool> DestroyAsync(long id);
-    Task<UserResultDto> GetByIdAsync(long id);
-    Task<IEnumerable<UserResultDto>> GetAllAsync();
-    Task<bool> UserUpdateRole(long id, EUserRole role);
+    Task<UserResultDto> RegisterAsync(UserCreationDto dto,CancellationToken cancellationToken = default);
+    Task<string> LoginAsync(UserLoginDto dto,CancellationToken cancellationToken = default);
+    Task<bool> ChangePasswordAsync(UserChangePassword dto, CancellationToken cancellationToken = default);
+    Task<UserResultDto> UpdateAsync(UserUpdateDto dto, CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(long id,CancellationToken cancellationToken = default);
+    Task<bool> DestroyAsync(long id, CancellationToken cancellationToken = default);
+    Task<UserResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<UserResultDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<bool> UserUpdateRole(long id, EUserRole role,CancellationToken cancellationToken = default);
 }
