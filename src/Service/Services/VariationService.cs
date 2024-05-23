@@ -12,17 +12,17 @@ namespace Service.Services;
 public class VariationService : IVariationService
 {
     private readonly IMapper mapper;
-    private readonly IRepository<Variation> repository;
+    private readonly IRepository<Variation> variationRepository;
     private readonly IRepository<Category> categoryRepository;
     private readonly IProductConfigurationService productConfigurationService;
     public VariationService(
         IMapper mapper, 
-        IRepository<Variation> repository,
+        IRepository<Variation> variationRepository,
         IRepository<Category> categoryRepository,
         IProductConfigurationService productConfigurationService)
     {
         this.mapper = mapper;
-        this.repository = repository;
+        this.variationRepository = variationRepository;
         this.categoryRepository = categoryRepository;
         this.productConfigurationService = productConfigurationService;
     }
@@ -35,15 +35,15 @@ public class VariationService : IVariationService
 
         var mappedVariation = this.mapper.Map<Variation>(dto);
 
-        await this.repository.AddAsync(mappedVariation);
-        await this.repository.SaveAsync(cancellationToken);
+        await this.variationRepository.AddAsync(mappedVariation);
+        await this.variationRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<VariationResultDto>(mappedVariation);
     }
 
     public async Task<VariationResultDto> UpdateAsync(VariationUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        var existVariation = await this.repository.GetAsync(r => r.Id.Equals(dto.Id), 
+        var existVariation = await this.variationRepository.GetAsync(vr => vr.Id.Equals(dto.Id), 
             includes: new[] { "Category", "VariationOptions" },
             cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This variation was not found with {dto.Id}");
@@ -54,27 +54,27 @@ public class VariationService : IVariationService
 
         var mappedVariation = this.mapper.Map(dto, existVariation);
 
-        this.repository.Update(mappedVariation);
-        await this.repository.SaveAsync(cancellationToken);
+        this.variationRepository.Update(mappedVariation);
+        await this.variationRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<VariationResultDto>(mappedVariation);
     }
 
     public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existVariation = await this.repository.GetAsync(r => r.Id.Equals(id),
+        var existVariation = await this.variationRepository.GetAsync(vr => vr.Id.Equals(id),
             cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This variation was not found with {id}");
 
-        this.repository.Delete(existVariation);
-        await this.repository.SaveAsync(cancellationToken);
+        this.variationRepository.Delete(existVariation);
+        await this.variationRepository.SaveAsync(cancellationToken);
 
         return true;
     }
 
     public async Task<VariationResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existVariation = await this.repository.GetAsync(r => r.Id.Equals(id), 
+        var existVariation = await this.variationRepository.GetAsync(vr =>vr.Id.Equals(id), 
             includes: new[] { "Category", "VariationOptions" },
             cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This variation was not found with {id}");
@@ -84,7 +84,7 @@ public class VariationService : IVariationService
 
     public async Task<IEnumerable<VariationResultDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var variations = await this.repository.GetAll(includes: new[] { "Category", "VariationOptions" })
+        var variations = await this.variationRepository.GetAll(includes: new[] { "Category", "VariationOptions" })
             .ToListAsync(cancellationToken);
 
         return this.mapper.Map<IEnumerable<VariationResultDto>>(variations);
@@ -94,7 +94,7 @@ public class VariationService : IVariationService
         long productItemId,
         CancellationToken cancellationToken = default)
     {
-        var variations = await this.repository.GetAll(r=> r.CategoryId.Equals(categoryId))
+        var variations = await this.variationRepository.GetAll(r=> r.CategoryId.Equals(categoryId))
             .ToListAsync(cancellationToken);
 
         var resultVariations = this.mapper.Map<List<VariationFeatureResultDto>>(variations);
