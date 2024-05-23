@@ -51,7 +51,7 @@ public class VariationOptionService : IVariationOptionService
             ProductItemId = dto.ProductItemId,
             VariationOptionId = mappedVariationOption.Id
         };
-        await this.productConfigurationService.CreateAsync(productConfiguration); //TODO need to add cancellationToken to this method
+        await this.productConfigurationService.CreateAsync(productConfiguration, cancellationToken);
 
         return this.mapper.Map<VariationOptionResultDto>(mappedVariationOption);
     }
