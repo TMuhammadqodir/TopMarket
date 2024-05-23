@@ -11,17 +11,17 @@ namespace Service.Services;
 public class ProductConfigurationService : IProductConfigurationService
 {
     private readonly IMapper mapper;
-    private readonly IRepository<ProductConfiguration> repository;
+    private readonly IRepository<ProductConfiguration> productConfigurationRepository;
     private readonly IRepository<ProductItem> productItemRepository;
     private readonly IRepository<VariationOption> variationOptionRepository;
     public ProductConfigurationService(
         IMapper mapper, 
-        IRepository<ProductConfiguration> repository,
+        IRepository<ProductConfiguration> productConfigurationRepository,
         IRepository<ProductItem> productItemRepository,
         IRepository<VariationOption> variationOptionRepository)
     {
         this.mapper = mapper;
-        this.repository = repository;
+        this.productConfigurationRepository = productConfigurationRepository;
         this.productItemRepository = productItemRepository;
         this.variationOptionRepository = variationOptionRepository;
     }
@@ -39,8 +39,8 @@ public class ProductConfigurationService : IProductConfigurationService
 
         var mappedProductConfiguration = this.mapper.Map<ProductConfiguration>(dto);
 
-        await this.repository.AddAsync(mappedProductConfiguration);
-        await this.repository.SaveAsync(cancellationToken);
+        await this.productConfigurationRepository.AddAsync(mappedProductConfiguration);
+        await this.productConfigurationRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<ProductConfigurationResultDto>(mappedProductConfiguration);
     }
@@ -48,7 +48,7 @@ public class ProductConfigurationService : IProductConfigurationService
     public async Task<ProductConfigurationResultDto> UpdateAsync(ProductConfigurationUpdateDto dto, 
         CancellationToken cancellationToken = default)
     {
-        var existProductConfiguration = await this.repository.GetAsync(r => r.Id.Equals(dto.Id), 
+        var existProductConfiguration = await this.productConfigurationRepository.GetAsync(pcr => pcr.Id.Equals(dto.Id), 
             includes: new[] { "ProductItem", "VariationOption" }, 
             cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This productConfiguration was not found with {dto.Id}");
@@ -63,27 +63,27 @@ public class ProductConfigurationService : IProductConfigurationService
 
         var mappedProductConfiguration = this.mapper.Map(dto, existProductConfiguration);
 
-        this.repository.Update(mappedProductConfiguration);
-        await this.repository.SaveAsync(cancellationToken);
+        this.productConfigurationRepository.Update(mappedProductConfiguration);
+        await this.productConfigurationRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<ProductConfigurationResultDto>(mappedProductConfiguration);
     }
 
     public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existProductConfiguration = await this.repository.GetAsync(r => r.Id.Equals(id),
+        var existProductConfiguration = await this.productConfigurationRepository.GetAsync(pcr => pcr.Id.Equals(id),
             cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This productConfiguration was not found with {id}");
 
-        this.repository.Delete(existProductConfiguration);
-        await this.repository.SaveAsync(cancellationToken);
+        this.productConfigurationRepository.Delete(existProductConfiguration);
+        await this.productConfigurationRepository.SaveAsync(cancellationToken);
 
         return true;
     }
 
     public async Task<ProductConfigurationResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existProductConfiguration = await this.repository.GetAsync(r => r.Id.Equals(id), 
+        var existProductConfiguration = await this.productConfigurationRepository.GetAsync(pcr => pcr.Id.Equals(id), 
             includes: new[] { "ProductItem", "VariationOption" },
             cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This productConfiguration was not found with {id}");
@@ -93,7 +93,7 @@ public class ProductConfigurationService : IProductConfigurationService
 
     public async Task<IEnumerable<ProductConfigurationResultDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var productConfigurations = await this.repository.GetAll(includes: new[] { "ProductItem", "VariationOption" })
+        var productConfigurations = await this.productConfigurationRepository.GetAll(includes: new[] { "ProductItem", "VariationOption" })
             .ToListAsync(cancellationToken);
 
         return this.mapper.Map<IEnumerable<ProductConfigurationResultDto>>(productConfigurations);
@@ -101,7 +101,7 @@ public class ProductConfigurationService : IProductConfigurationService
 
     public async Task<IEnumerable<ProductConfigurationResultDto>> GetByProductItemIdAsync(long productItemId, CancellationToken cancellationToken = default)
     {
-        var productConfigurations = await this.repository.GetAll(r=> r.ProductItemId.Equals(productItemId), 
+        var productConfigurations = await this.productConfigurationRepository.GetAll(pcr=> pcr.ProductItemId.Equals(productItemId), 
             includes: new[] { "ProductItem", "VariationOption" })
             .ToListAsync(cancellationToken);
 
