@@ -23,7 +23,7 @@ public class CountryService:ICountryService
         this.repository = repository;
     }
 
-    public async Task<bool> SetAsync()
+    public async Task<bool> SetAsync(CancellationToken cancellationToken = default)
     {
         var dbSource = this.repository.GetAll();
         if (dbSource.Any())
@@ -37,25 +37,27 @@ public class CountryService:ICountryService
         {
             var mappedCountry = this.mapper.Map<Country>(country);
             await this.repository.AddAsync(mappedCountry);
-            await this.repository.SaveAsync();
+            await this.repository.SaveAsync(cancellationToken);
         }
         return true;
     }
 
-    public async Task<CountryResultDto> RetrieveByIdAsync(long id)
+    public async Task<CountryResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var country = await this.repository.GetAsync(r => r.Id.Equals(id))
+        var country = await this.repository.GetAsync(r => r.Id.Equals(id), cancellationToken: cancellationToken)
             ?? throw new NotFoundException("This country is not found");
 
         var mappedCountry = this.mapper.Map<CountryResultDto>(country);
         return mappedCountry;
     }
 
-    public async Task<IEnumerable<CountryResultDto>> RetrieveAllAsync(PaginationParams @params)
+    public async Task<IEnumerable<CountryResultDto>> RetrieveAllAsync(PaginationParams @params, 
+        CancellationToken cancellationToken = default)
     {
         var countries = await this.repository.GetAll()
             .ToPaginate(@params)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
+
         var result = this.mapper.Map<IEnumerable<CountryResultDto>>(countries);
         return result;
     }
