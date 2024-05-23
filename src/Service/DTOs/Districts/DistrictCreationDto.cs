@@ -4,9 +4,6 @@ namespace Service.DTOs.Districts;
 
 public class DistrictCreationDto
 {
-    [JsonProperty("id")]
-    public long Id { get; set; }
-
     [JsonProperty("name_uz")]
     public string NameUz { get; set; }
 
