@@ -2,6 +2,7 @@
 using Service.DTOs.Attachments;
 using Service.DTOs.ProductItems;
 using Service.Interfaces;
+using System.Text;
 using TopMarket.Models;
 
 namespace TopMarket.Controllers;
@@ -111,4 +112,29 @@ public class ProductItemsController : BaseController
             Message = "Success",
             Data = await this.productItemService.RemoveImageAsync(imageId, productItemId)
         });
+
+    [HttpGet("get-data")]
+    public async Task<ActionResult> GetTest(CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Simulate a time-consuming task
+            await Task.Delay(10000, cancellationToken);
+
+            Console.WriteLine("I'm Here!!!");
+
+            // Generate and return weather forecasts
+            return Ok(new Response()
+            {
+                StatusCode = 200,
+                Message = "Success",
+                Data = "nice"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest();
+        }
+    }
 }
