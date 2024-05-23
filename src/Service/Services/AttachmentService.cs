@@ -20,7 +20,7 @@ public class AttachmentService : IAttachmentService
         this.attachmentRepository = attachmentRepository;
     }
 
-    public async Task<AttachmentResultDto> UploadImageAsync(AttachmentCreationDto dto)
+    public async Task<AttachmentResultDto> UploadImageAsync(AttachmentCreationDto dto, CancellationToken cancellationToken = default)
     {
         var weebrootPath = Path.Combine(PathHepler.WebRootPath, "Images");
 
@@ -41,18 +41,18 @@ public class AttachmentService : IAttachmentService
         };
 
         await attachmentRepository.AddAsync(createdAttachment);
-        await attachmentRepository.SaveAsync();
+        await attachmentRepository.SaveAsync(cancellationToken);
 
         return mapper.Map<AttachmentResultDto>(createdAttachment);
     }
 
-    public async Task<bool> DeleteImageAsync(long id)
+    public async Task<bool> DeleteImageAsync(long id, CancellationToken cancellationToken = default)
     {
         var existImage = await attachmentRepository.GetAsync(attachment => attachment.Id.Equals(id))
             ?? throw new NotFoundException($"This image was not found with {id}");
 
         attachmentRepository.Delete(existImage);
-        await attachmentRepository.SaveAsync();
+        await attachmentRepository.SaveAsync(cancellationToken);
 
         return true;
     }
