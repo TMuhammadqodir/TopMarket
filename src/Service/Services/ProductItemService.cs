@@ -156,14 +156,12 @@ public class ProductItemService : IProductItemService
         foreach (var productItem in productItems)
         {
             //TODO Muhammadqodir: Soddalashtirish va optimizatsiya qilish kerak
-            if (productItem.Product is null)
-                continue;
+            if (productItem.Product is null) continue;
             
             var category = await this.categoryRepository
                     .GetAsync(productItem.Product.CategoryId, cancellationToken: cancellationToken);
 
-            if (category is null)
-                continue;
+            if (category is null) continue;
 
             var result = this.mapper.Map<ProductItemResultDto>(productItem);
             result.Variations = (await variationService.GetFeaturesOfProduct(productItem.Product.CategoryId, productItem.Id)).ToList();
