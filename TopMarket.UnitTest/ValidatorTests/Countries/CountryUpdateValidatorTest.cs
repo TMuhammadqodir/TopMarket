@@ -14,6 +14,7 @@ public class CountryUpdateValidatorTest
     [Theory]
     [InlineData(1L, "uzbekistan", "")]
     [InlineData(0, "uzbekistan", "uz")]
+    [InlineData(-2L, "uzbekistan", "uz")]
     [InlineData(2L, "", "uz")]
     [InlineData(3L, "", "")]
     [InlineData(4L, "u", "u")]

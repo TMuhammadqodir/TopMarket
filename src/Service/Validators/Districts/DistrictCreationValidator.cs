@@ -12,7 +12,7 @@ public class DistrictCreationValidator : AbstractValidator<DistrictCreationDto>
             .WithMessage("Country cannot be empty")
             .MaximumLength(128)
             .WithMessage("This lastname very long")
-            .MinimumLength(1)
+            .MinimumLength(2)
             .WithMessage("This lastname very short");
 
         RuleFor(item => item.NameOz)
@@ -20,7 +20,7 @@ public class DistrictCreationValidator : AbstractValidator<DistrictCreationDto>
             .WithMessage("Country code cannot be empty")
             .MaximumLength(128)
             .WithMessage("This lastname very long")
-            .MinimumLength(1)
+            .MinimumLength(2)
             .WithMessage("This lastname very short");
 
         RuleFor(item => item.NameRu)
@@ -28,7 +28,7 @@ public class DistrictCreationValidator : AbstractValidator<DistrictCreationDto>
             .WithMessage("Country code cannot be empty")
             .MaximumLength(128)
             .WithMessage("This lastname very long")
-            .MinimumLength(1)
+            .MinimumLength(2)
             .WithMessage("This lastname very short");
 
         RuleFor(item => item.RegionId)
