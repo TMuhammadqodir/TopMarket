@@ -5,7 +5,7 @@ namespace Service.Validators.Districts;
 
 public class DistrictCreationValidator : AbstractValidator<DistrictCreationDto>
 {
-    DistrictCreationValidator()
+    public DistrictCreationValidator()
     {
         RuleFor(item => item.NameUz)
             .NotEmpty()
@@ -32,7 +32,7 @@ public class DistrictCreationValidator : AbstractValidator<DistrictCreationDto>
             .WithMessage("This lastname very short");
 
         RuleFor(item => item.RegionId)
-            .NotNull()
-            .WithMessage("id cannot be null");
+            .GreaterThan(0)
+            .WithMessage("id cannot be negative or 0");
     }
 }
