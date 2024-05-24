@@ -45,7 +45,7 @@ public class ProductItemService : IProductItemService
 
     public async Task<ProductItemResultDto> CreateAsync(ProductItemCreationDto dto, CancellationToken cancellationToken = default)
     {
-        var existProduct = await this.productRepository.GetAsync(c => c.Id.Equals(dto.ProductId), cancellationToken: cancellationToken)
+        var product = await this.productRepository.GetAsync(c => c.Id.Equals(dto.ProductId), cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This product was not found with {dto.ProductId}");
 
         var mappedProductItem = this.mapper.Map<ProductItem>(dto);
@@ -55,7 +55,7 @@ public class ProductItemService : IProductItemService
         await this.repository.AddAsync(mappedProductItem, cancellationToken);
         await this.repository.SaveAsync(cancellationToken);
 
-        mappedProductItem.Product = existProduct;
+        mappedProductItem.Product = product;
 
         return this.mapper.Map<ProductItemResultDto>(mappedProductItem);
     }
@@ -71,24 +71,24 @@ public class ProductItemService : IProductItemService
 
         this.repository.Update(productItem);
         await this.repository.SaveAsync(cancellationToken);
-
+        
         return this.mapper.Map<ProductItemResultDto>(productItem);
     }
 
     public async Task<ProductItemResultDto> SubstractAsync(ProductItemIncomeDto dto, CancellationToken cancellationToken = default)
     {
-        var existProductItem = await this.repository.GetAsync(dto.Id, new string[] { "Product" }, cancellationToken)
+        var productItem = await this.repository.GetAsync(dto.Id, new string[] { "Product" }, cancellationToken)
             ?? throw new NotFoundException($"This product was not found with {dto.Id}");
 
-        if (existProductItem.QuantityInStock < dto.QuantityInStock)
+        if (productItem.QuantityInStock < dto.QuantityInStock)
             throw new CustomException(400, "ProductItem quantity is not enough");
 
-        existProductItem.QuantityInStock -= dto.QuantityInStock;
+        productItem.QuantityInStock -= dto.QuantityInStock;
 
-        this.repository.Update(existProductItem);
+        this.repository.Update(productItem);
         await this.repository.SaveAsync(cancellationToken);
 
-        return this.mapper.Map<ProductItemResultDto>(existProductItem);
+        return this.mapper.Map<ProductItemResultDto>(productItem);
     }
 
     public async Task<ProductItemResultDto> ModifyAsync(ProductItemUpdateDto dto, CancellationToken cancellationToken = default)

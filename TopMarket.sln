@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopMarket.UnitTest", "TopMarket.UnitTest\TopMarket.UnitTest.csproj", "{3BBC9E87-332F-4297-9556-50177AB90442}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{30D7DC15-273D-4E90-9501-A62F11E44FCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30D7DC15-273D-4E90-9501-A62F11E44FCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30D7DC15-273D-4E90-9501-A62F11E44FCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BBC9E87-332F-4297-9556-50177AB90442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BBC9E87-332F-4297-9556-50177AB90442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BBC9E87-332F-4297-9556-50177AB90442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BBC9E87-332F-4297-9556-50177AB90442}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{8613B6CA-485F-4A3C-849C-16FB600178E2} = {9A29A5EC-6D97-44FC-ABA2-1C440D58E53B}
 		{2DAFBAD6-6A4A-4F96-9BA3-DAE31FD2B5A5} = {9A29A5EC-6D97-44FC-ABA2-1C440D58E53B}
 		{30D7DC15-273D-4E90-9501-A62F11E44FCF} = {9A29A5EC-6D97-44FC-ABA2-1C440D58E53B}
+		{3BBC9E87-332F-4297-9556-50177AB90442} = {913D042D-518B-4B55-BA85-1306276FB41A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90F85F2A-3279-43E4-ACCB-0195B8C89482}
