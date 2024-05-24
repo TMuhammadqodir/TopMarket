@@ -15,16 +15,16 @@ namespace Service.Services;
 public class RegionService:IRegionService
 {
     private readonly IMapper mapper;
-    private readonly IRepository<Region> repository;
-    public RegionService(IRepository<Region> repository, IMapper mapper)
+    private readonly IRepository<Region> regionRepository;
+    public RegionService(IRepository<Region> regionRepository, IMapper mapper)
     {
-        this.repository = repository;
+        this.regionRepository = regionRepository;
         this.mapper = mapper;
     }
 
     public async Task<bool> SetAsync()
     {
-        var dbSource = this.repository.GetAll();
+        var dbSource = this.regionRepository.GetAll();
         if (dbSource.Any())
             throw new AlreadyExistException("Regions are already exist");
 
@@ -36,15 +36,15 @@ public class RegionService:IRegionService
         foreach (var region in regions)
         {
             var mappedRegion = this.mapper.Map<Region>(region);
-            await this.repository.AddAsync(mappedRegion);
-            await this.repository.SaveAsync();
+            await this.regionRepository.AddAsync(mappedRegion);
+            await this.regionRepository.SaveAsync();
         }
         return true;
     }
 
     public async Task<RegionResultDto> RetrieveByIdAsync(long id)
     {
-        var region = await this.repository.GetAsync(r => r.Id.Equals(id), includes: new[] { "Country" })
+        var region = await this.regionRepository.GetAsync(r => r.Id.Equals(id), includes: new[] { "Country" })
             ?? throw new NotFoundException("This region is not found");
 
         var mappedRegion = this.mapper.Map<RegionResultDto>(region);
@@ -53,7 +53,7 @@ public class RegionService:IRegionService
 
     public async Task<IEnumerable<RegionResultDto>> RetrieveAllAsync(PaginationParams @params)
     {
-        var regions = await this.repository.GetAll(includes: new[] { "Country" })
+        var regions = await this.regionRepository.GetAll(includes: new[] { "Country" })
             .ToPaginate(@params)
             .ToListAsync();
         var result = this.mapper.Map<IEnumerable<RegionResultDto>>(regions);
