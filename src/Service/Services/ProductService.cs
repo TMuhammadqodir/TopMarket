@@ -154,8 +154,8 @@ public class ProductService : IProductService
             var productAttachment = product.ProductAttachments.First();
             var attachmentId = productAttachment.AttachmentId;
 
-            await this.attachmentService.DeleteImageAsync(attachmentId);
-            await this.productAttachmentService.DeleteAsync(productAttachment.Id);
+            await this.attachmentService.DeleteImageAsync(attachmentId, cancellationToken);
+            await this.productAttachmentService.DeleteAsync(productAttachment.Id, cancellationToken);
         }
 
         var mappedProduct = this.mapper.Map<ProductResultDto>(product);
@@ -166,7 +166,7 @@ public class ProductService : IProductService
             AttachmentId = newAttachment.Id,
         };
 
-        mappedProduct.ProductAttachments.Add(await this.productAttachmentService.CreateAsync(productAttachment2));
+        mappedProduct.ProductAttachments.Add(await this.productAttachmentService.CreateAsync(productAttachment2, cancellationToken));
         return mappedProduct;
     }
 }
