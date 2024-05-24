@@ -5,10 +5,10 @@ namespace Service.Interfaces;
 
 public interface IProductAttachmentService
 {
-    Task<ProductAttachmentResultDto> CreateAsync(ProductAttachmentCreationDto dto,CancellationToken cancellationToken);
-    Task<ProductAttachmentResultDto> UpdateAsync(ProductAttachmentUpdateDto dto,CancellationToken cancellationToken);
-    Task<bool> DeleteAsync(long id, CancellationToken cancellationToken);
-    Task<ProductAttachmentResultDto> GetByIdAsync(long id, CancellationToken cancellationToken);
-    Task<IEnumerable<ProductAttachmentResultDto>> GetAllAsync(CancellationToken cancellationToken);
-    Task<bool> DeleteAsync(long productId, long attachmentId,CancellationToken cancellationToken);
+    Task<ProductAttachmentResultDto> CreateAsync(ProductAttachmentCreationDto dto,CancellationToken cancellationToken = default);
+    Task<ProductAttachmentResultDto> UpdateAsync(ProductAttachmentUpdateDto dto,CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default);
+    Task<ProductAttachmentResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ProductAttachmentResultDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(long productId, long attachmentId,CancellationToken cancellationToken = default);
 }
