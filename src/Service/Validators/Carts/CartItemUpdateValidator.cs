@@ -7,6 +7,10 @@ public class CartItemUpdateValidator : AbstractValidator<CartItemUpdateDto>
 {
     public CartItemUpdateValidator()
     {
+        RuleFor(dto => dto.Id)
+            .NotEmpty()
+            .WithMessage("Id should NOT be equal to null or 0.");
+
         RuleFor(dto => dto.Quantity)
             .NotEqual(0)
             .WithMessage("Quantity should NOT be equal to 0.");
