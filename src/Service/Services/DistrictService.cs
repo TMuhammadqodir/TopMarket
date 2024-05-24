@@ -9,6 +9,7 @@ using Service.Exceptions;
 using Service.Extensions;
 using Service.Helpers;
 using Service.Interfaces;
+using Service.Validators.Districts;
 
 namespace Service.Services;
 
@@ -16,10 +17,12 @@ public class DistrictService:IDistrictService
 {
     private readonly IMapper mapper;
     private readonly IRepository<District> repository;
+    private readonly DistrictCreationValidator districtCreationValidator;
     public DistrictService(IMapper mapper, IRepository<District> repository)
     {
         this.mapper = mapper;
         this.repository = repository;
+        this.districtCreationValidator = new DistrictCreationValidator();
     }
 
     public async Task<bool> SetAsync()
@@ -34,6 +37,10 @@ public class DistrictService:IDistrictService
 
         foreach (var district in districts)
         {
+            var reusltDistrictCreationValidator = this.districtCreationValidator.Validate(district);
+            if (reusltDistrictCreationValidator.Errors.Any())
+                throw new CustomException(403, reusltDistrictCreationValidator.Errors.FirstOrDefault().ToString());
+
             var mappedDistrict = this.mapper.Map<District>(district);
             await this.repository.AddAsync(mappedDistrict);
             await this.repository.SaveAsync();
