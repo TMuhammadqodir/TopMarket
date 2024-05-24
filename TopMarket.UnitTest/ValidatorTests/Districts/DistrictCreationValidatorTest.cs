@@ -1,6 +1,4 @@
-﻿using Service.DTOs.Countries;
-using Service.DTOs.Districts;
-using Service.Validators.Countries;
+﻿using Service.DTOs.Districts;
 using Service.Validators.Districts;
 
 namespace TopMarket.UnitTest.ValidatorTests.Districts;
