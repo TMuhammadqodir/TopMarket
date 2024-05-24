@@ -20,22 +20,22 @@ public class AuthService : IAuthService
 {
     private readonly IMapper mapper;
     private readonly IConfiguration configuration;
-    private readonly IRepository<User> repository;
+    private readonly IRepository<User> userRepository;
     private readonly ICartService cartService;
 
-    public AuthService(IRepository<User> repository,
+    public AuthService(IRepository<User> userRepository,
                        IMapper mapper, 
                        IConfiguration configuration, 
                        ICartService cartService)
     {
-        this.repository = repository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
         this.configuration = configuration;
         this.cartService = cartService;
     }
     public async Task<UserResultDto> RegisterAsync(UserCreationDto dto,CancellationToken cancellationToken=default)
     {
-        User? user = await this.repository.GetAsync(u => u.Phone.Equals(dto.Phone));
+        User? user = await this.userRepository.GetAsync(ur => ur.Phone.Equals(dto.Phone));
         if (user is not null)
             throw new AlreadyExistException("This phone already exist");
 
@@ -48,8 +48,8 @@ public class AuthService : IAuthService
         mapped.UserRole = EUserRole.Customer;
         mapped.CartId = (await this.cartService.CreateAsync()).Id;
 
-        await this.repository.AddAsync(mapped,cancellationToken);
-        await this.repository.SaveAsync(cancellationToken);
+        await this.userRepository.AddAsync(mapped,cancellationToken);
+        await this.userRepository.SaveAsync(cancellationToken);
 
         var result = this.mapper.Map<UserResultDto>(mapped);
         return result;
@@ -57,7 +57,7 @@ public class AuthService : IAuthService
 
     public async Task<string> LoginAsync(UserLoginDto dto, CancellationToken cancellationToken = default)
     {
-        User? user = await this.repository.GetAsync(u => u.Phone.Equals(dto.Phone))
+        User? user = await this.userRepository.GetAsync(ur => ur.Phone.Equals(dto.Phone))
             ?? throw new NotFoundException("This nomber not found");
         
         if (!PasswordHash.VerifyPasswordHash(dto.Password, user.PasswordHash, user.PasswordSalt))
@@ -84,35 +84,35 @@ public class AuthService : IAuthService
 
     public async Task<bool> ChangePasswordAsync(UserChangePassword dto, CancellationToken cancellationToken = default)
     {
-        User? user= await this.repository.GetAsync(u => u.Id.Equals(dto.UserId))
+        User? user= await this.userRepository.GetAsync(ur => ur.Id.Equals(dto.UserId))
             ?? throw new NotFoundException("User not found");
         
         PasswordHash.Encrypt(dto.Password,out byte[] passwordhash, out byte[] salt);
 
         user.PasswordHash= passwordhash;
         user.PasswordSalt= salt;
-        this.repository.Update(user);
-        await this.repository.SaveAsync(cancellationToken);
+        this.userRepository.Update(user);
+        await this.userRepository.SaveAsync(cancellationToken);
 
         return true;
     }
 
     public async Task<UserResultDto> UpdateAsync(UserUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        User? user = await this.repository.GetAsync(dto.Id)
+        User? user = await this.userRepository.GetAsync(dto.Id)
             ?? throw new NotFoundException("User not Found");
 
         var mapped = mapper.Map(dto,user);
         
-        this.repository.Update(mapped);
-        await this.repository.SaveAsync(cancellationToken);
+        this.userRepository.Update(mapped);
+        await this.userRepository.SaveAsync(cancellationToken);
         
         var result = this.mapper.Map<UserResultDto>(mapped);
         return result;
     }
     public async Task<UserResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        User? user = await this.repository.GetAsync(id, cancellationToken: cancellationToken)
+        User? user = await this.userRepository.GetAsync(id, cancellationToken: cancellationToken)
             ?? throw new NotFoundException("User not found");
 
         var result = mapper.Map<UserResultDto>(user);
@@ -121,7 +121,7 @@ public class AuthService : IAuthService
 
     public async Task<IEnumerable<UserResultDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var users = await this.repository.GetAll().ToListAsync(cancellationToken:cancellationToken);
+        var users = await this.userRepository.GetAll().ToListAsync(cancellationToken:cancellationToken);
 
         var result = mapper.Map<IEnumerable<UserResultDto>>(users);
         return result;
@@ -129,32 +129,32 @@ public class AuthService : IAuthService
 
     public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken= default)
     {
-        User? user = await  this.repository.GetAsync(id)
+        User? user = await  this.userRepository.GetAsync(id)
             ?? throw new NotFoundException("User not found");
 
-        this.repository.Delete(user);
-        await this.repository.SaveAsync(cancellationToken);
+        this.userRepository.Delete(user);
+        await this.userRepository.SaveAsync(cancellationToken);
         return true;
     }
 
     public async Task<bool> UserUpdateRole(long id, EUserRole role, CancellationToken cancellationToken= default)
     {
-        User? user = await this.repository.GetAsync(id)
+        User? user = await this.userRepository.GetAsync(id)
             ?? throw new NotFoundException("User not found");
 
         user.UserRole = role;
-        await this.repository.SaveAsync();
+        await this.userRepository.SaveAsync();
 
         return true;
     }
 
     public async Task<bool> DestroyAsync(long id, CancellationToken cancellationToken= default)
     {
-        User? user = await repository.GetAsync(id)
+        User? user = await userRepository.GetAsync(id)
             ?? throw new NotFoundException("User not found");
 
-        this.repository.Destroy(user);
-        await this.repository.SaveAsync(cancellationToken) ;
+        this.userRepository.Destroy(user);
+        await this.userRepository.SaveAsync(cancellationToken) ;
 
         return true;
     }
