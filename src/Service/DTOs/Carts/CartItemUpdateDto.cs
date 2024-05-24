@@ -6,5 +6,5 @@ public class CartItemUpdateDto
     public double Quantity { get; set; }
     public decimal Price { get; set; }
     public int CartId { get; set; }
-    public long ProductId { get; set; }
+    public long ProductItemId { get; set; }
 }
