@@ -9,6 +9,10 @@ public class PaymentTypeCreationValidator : AbstractValidator<PaymentTypeCreatio
     {
         RuleFor(pt => pt.Value)
             .NotEmpty()
-                .WithMessage("Value should NOT be empty.");
+                .WithMessage("Value should NOT be empty.")
+            .MinimumLength(4)
+                .WithMessage("Value length should NOT be less than 4.")
+            .MaximumLength(100)
+                .WithMessage("Value length should NOT be more than 100.");
     }
 }
