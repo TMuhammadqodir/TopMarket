@@ -4,7 +4,7 @@ using Domain.Entities.Payment;
 using Domain.Entities.UserFolder;
 using Service.DTOs.Addresses;
 using Service.DTOs.OrderLines;
-using Service.DTOs.OrderStates;
+using Service.DTOs.OrderStatuses;
 using Service.DTOs.Payments.PaymentMethods;
 using Service.DTOs.ShippingMethods;
 using Service.DTOs.Users;
