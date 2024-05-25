@@ -13,6 +13,10 @@ public class PaymentTypeUpdateValidator : AbstractValidator<PaymentTypeUpdateDto
 
         RuleFor(pt => pt.Value)
             .NotEmpty()
-                .WithMessage("Value should NOT be empty.");
+                .WithMessage("Value should NOT be empty.")
+            .MinimumLength(4)
+                .WithMessage("Value length should NOT less then 4.")
+            .MaximumLength(100)
+                .WithMessage("Value length should NOT more then 100.");
     }
 }
