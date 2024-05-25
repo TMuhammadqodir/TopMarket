@@ -3,7 +3,7 @@ using Data.IRepositories;
 using Domain.Entities.OrderFolder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Service.DTOs.OrderStates;
+using Service.DTOs.OrderStatuses;
 using Service.Exceptions;
 using Service.Interfaces;
 
