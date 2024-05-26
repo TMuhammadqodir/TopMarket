@@ -398,3 +398,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /Qualification.Api/wwwroot/Certificates
+/TopMarket.UnitTest/TopMarket.UnitTest.csproj
