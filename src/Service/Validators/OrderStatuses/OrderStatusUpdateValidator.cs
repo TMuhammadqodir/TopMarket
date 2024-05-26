@@ -1,22 +1,39 @@
-﻿using FluentValidation;
+﻿using Data.IRepositories;
+using Domain.Entities.OrderFolder;
+using FluentValidation;
 using Service.DTOs.OrderStatuses;
 
 namespace Service.Validators.OrderStatuses;
 
 public class OrderStatusUpdateValidator : AbstractValidator<OrderStatusUpdateDto>
 {
-    public OrderStatusUpdateValidator()
+    private readonly IRepository<OrderStatus> repository;
+
+    public OrderStatusUpdateValidator(IRepository<OrderStatus> repository)
     {
-        RuleFor(os => os.Id)
-            .NotEmpty()
-                .WithMessage("Id should NOT be empty.");
+        this.repository = repository;
+        this.SetUpRules();
+    }
+
+    private void SetUpRules()
+    {
+        RuleFor(os => os.Id).NotEmpty();
 
         RuleFor(os => os.Name)
             .NotEmpty()
-                .WithMessage("Name should NOT be empty.")
             .MinimumLength(4)
-                .WithMessage("Name length should NOT be less than 4.")
-            .MaximumLength(100)
-                .WithMessage("Name length should NOT be more than 100.");
+            .MaximumLength(100);
+
+        RuleFor(os => os)
+            .MustAsync(HasUniqueName)
+                .WithMessage("Name should be unique.");
+    }
+
+    private async Task<bool> HasUniqueName(OrderStatusUpdateDto dto, CancellationToken cancellationToken = default)
+    {
+        return await this.repository.GetAsync(os => 
+            os.Name.ToLower() == dto.Name.ToLower() &&
+            os.Id != dto.Id, cancellationToken: cancellationToken
+        ) is null;
     }
 }

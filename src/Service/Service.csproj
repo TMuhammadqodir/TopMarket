@@ -20,6 +20,9 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Attachments\" />
+    <Folder Include="Validators\Promations\" />
+    <Folder Include="Validators\Products\" />
+    <Folder Include="Validators\ProductItems\" />
   </ItemGroup>
 
   <ItemGroup>

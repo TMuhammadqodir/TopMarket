@@ -1,18 +1,30 @@
-﻿using FluentValidation;
+﻿using Data.IRepositories;
+using Domain.Entities.OrderFolder;
+using FluentValidation;
 using Service.DTOs.OrderStatuses;
 
 namespace Service.Validators.OrderStatuses;
 
 public class OrderStatusCreationValidator : AbstractValidator<OrderStatusCreationDto>
 {
-    public OrderStatusCreationValidator()
+    private readonly IRepository<OrderStatus> repository;
+
+    public OrderStatusCreationValidator(IRepository<OrderStatus> repository)
+    {
+        this.repository = repository;
+        this.SetUpRules();
+    }
+
+    private void SetUpRules()
     {
         RuleFor(os => os.Name)
-            .NotEmpty()
-                .WithMessage("Name should NOT be empty.")
-            .MinimumLength(4)
-                .WithMessage("Name length should NOT be less than 4.")
-            .MaximumLength(100)
-                .WithMessage("Name length should NOT be more than 100.");
+                    .NotEmpty()
+                    .MustAsync(IsUnique)
+                    .MinimumLength(4)
+                    .MaximumLength(100);
     }
+
+    private async Task<bool> IsUnique(string name, CancellationToken token = default)
+        => await this.repository
+            .GetAsync(os => os.Name.ToLower() == name.ToLower(), cancellationToken: token) is null;
 }
