@@ -1,13 +1,13 @@
 ﻿using Data.IRepositories;
 using Data.Repositories;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service.Interfaces;
 using Service.Mappers;
 using Service.Services;
-using System.Runtime.CompilerServices;
+using Service.Validators.OrderStatuses;
 using System.Text;
 
 namespace TopMarket.Extentions;
@@ -38,7 +38,7 @@ public static class ServicesCollection
         services.AddScoped<IPromotionCategoryService, PromotionCategoryService>();
         services.AddScoped<IShippingMethodService, ShippingMethodService>();
         services.AddScoped<IOrderStatusService, OrderStatusService>();
-
+        services.AddValidatorsFromAssemblyContaining<OrderStatusCreationValidator>();
     }
     public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
     {
