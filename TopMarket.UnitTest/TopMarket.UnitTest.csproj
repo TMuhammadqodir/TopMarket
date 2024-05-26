@@ -26,4 +26,8 @@
     <ProjectReference Include="..\src\Service\Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ValidatorTests\Promations\" />
+  </ItemGroup>
+
 </Project>
