@@ -13,69 +13,69 @@ namespace Service.Services;
 public class ShippingMethodService : IShippingMethodService
 {
     private readonly IMapper mapper;
-    private readonly IRepository<ShippingMethod> repository;
-    public ShippingMethodService(IMapper mapper, IRepository<ShippingMethod> repository)
+    private readonly IRepository<ShippingMethod> shippingMethodRepository;
+    public ShippingMethodService(IMapper mapper, IRepository<ShippingMethod> shippingMethodRepository)
     {
         this.mapper = mapper;
-        this.repository = repository;
+        this.shippingMethodRepository = shippingMethodRepository;
     }
 
-    public async Task<ShippingMethodResultDto> CreateAsync(ShippingMethodCreationDto dto)
+    public async Task<ShippingMethodResultDto> CreateAsync(ShippingMethodCreationDto dto, CancellationToken cancellationToken = default)
     {
-        var existShippingMethod = await this.repository.GetAsync(c => c.Name.ToLower().Equals(dto.Name.ToLower()));
-        if (existShippingMethod is not null)
+        var shippingMethod = await this.shippingMethodRepository.GetAsync(sr => sr.Name.ToLower().Equals(dto.Name.ToLower()));
+        if (shippingMethod is not null)
             throw new AlreadyExistException($"This shippingMethod already exist with {dto.Name}");
 
         var mappedShippingMethod = this.mapper.Map<ShippingMethod>(dto);
 
-        await this.repository.AddAsync(mappedShippingMethod);
-        await this.repository.SaveAsync();
+        await this.shippingMethodRepository.AddAsync(mappedShippingMethod,cancellationToken);
+        await this.shippingMethodRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<ShippingMethodResultDto>(mappedShippingMethod);
     }
 
-    public async Task<ShippingMethodResultDto> UpdateAsync(ShippingMethodUpdateDto dto)
+    public async Task<ShippingMethodResultDto> UpdateAsync(ShippingMethodUpdateDto dto,CancellationToken cancellationToken=default)
     {
-        var existShippingMethod = await this.repository.GetAsync(c => c.Id.Equals(dto.Id), includes: new[] { "Orders" })
+        var shippingMethod = await this.shippingMethodRepository.GetAsync(sr => sr.Id.Equals(dto.Id), includes: new[] { "Orders" })
             ?? throw new NotFoundException($"This shippingMethod was not found with {dto.Id}");
 
-        if (!existShippingMethod.Name.Equals(dto.Name, StringComparison.OrdinalIgnoreCase))
+        if (!shippingMethod.Name.Equals(dto.Name, StringComparison.OrdinalIgnoreCase))
         {
-            var existShippingMethodName = await this.repository.GetAsync(c => c.Name.ToLower().Equals(dto.Name.ToLower()));
-            if (existShippingMethodName is not null)
+            var shippingMethodName = await this.shippingMethodRepository.GetAsync(sr => sr.Name.ToLower().Equals(dto.Name.ToLower()));
+            if (shippingMethodName is not null)
                 throw new AlreadyExistException($"This shippingMethod already exist with {dto.Name}");
         }
 
-        var mappedShippingMethod = this.mapper.Map(dto, existShippingMethod);
+        var mappedShippingMethod = this.mapper.Map(dto, shippingMethod);
 
-        this.repository.Update(mappedShippingMethod);
-        await this.repository.SaveAsync();
+        this.shippingMethodRepository.Update(mappedShippingMethod);
+        await this.shippingMethodRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<ShippingMethodResultDto>(mappedShippingMethod);
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existShippingMethod = await this.repository.GetAsync(c => c.Id.Equals(id))
+        var shippingMethod = await this.shippingMethodRepository.GetAsync(sr => sr.Id.Equals(id))
             ?? throw new NotFoundException($"This shippingMethod was not found with {id}");
 
-        this.repository.Delete(existShippingMethod);
-        await this.repository.SaveAsync();
+        this.shippingMethodRepository.Delete(shippingMethod);
+        await this.shippingMethodRepository.SaveAsync(cancellationToken);
 
         return true;
     }
 
-    public async Task<ShippingMethodResultDto> GetByIdAsync(long id)
+    public async Task<ShippingMethodResultDto> GetByIdAsync(long id,CancellationToken cancellationToken=default)
     {
-        var existShippingMethod = await this.repository.GetAsync(c => c.Id.Equals(id), includes: new[] { "Orders" })
+        var shippingMethod = await this.shippingMethodRepository.GetAsync(sr => sr.Id.Equals(id), includes: new[] { "Orders" })
             ?? throw new NotFoundException($"This shippingMethod was not found with {id}");
 
-        return this.mapper.Map<ShippingMethodResultDto>(existShippingMethod);
+        return this.mapper.Map<ShippingMethodResultDto>(shippingMethod);
     }
 
-    public async Task<IEnumerable<ShippingMethodResultDto>> GetAllAsync()
+    public async Task<IEnumerable<ShippingMethodResultDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var categories = await this.repository.GetAll(includes: new[] { "Orders" }).ToListAsync();
+        var categories = await this.shippingMethodRepository.GetAll(includes: new[] { "Orders" }).ToListAsync(cancellationToken:cancellationToken);
 
         return this.mapper.Map<IEnumerable<ShippingMethodResultDto>>(categories);
     }

@@ -1,4 +1,4 @@
-﻿using Service.DTOs.OrderStates;
+﻿using Service.DTOs.OrderStatuses;
 
 namespace Service.Interfaces;
 

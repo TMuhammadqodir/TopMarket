@@ -1,4 +1,4 @@
-﻿namespace Service.DTOs.OrderStates;
+﻿namespace Service.DTOs.OrderStatuses;
 
 public class OrderStatusCreationDto
 {

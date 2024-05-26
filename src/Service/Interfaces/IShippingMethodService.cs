@@ -5,9 +5,9 @@ namespace Service.Interfaces;
 
 public interface IShippingMethodService
 {
-    Task<ShippingMethodResultDto> CreateAsync(ShippingMethodCreationDto dto);
-    Task<ShippingMethodResultDto> UpdateAsync(ShippingMethodUpdateDto dto);
-    Task<bool> DeleteAsync(long id);
-    Task<ShippingMethodResultDto> GetByIdAsync(long id);
-    Task<IEnumerable<ShippingMethodResultDto>> GetAllAsync();
+    Task<ShippingMethodResultDto> CreateAsync(ShippingMethodCreationDto dto,CancellationToken cancellationToken=default);
+    Task<ShippingMethodResultDto> UpdateAsync(ShippingMethodUpdateDto dto,CancellationToken cancellationToken=default);
+    Task<bool> DeleteAsync(long id,CancellationToken cancellationToken=default);
+    Task<ShippingMethodResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ShippingMethodResultDto>> GetAllAsync(CancellationToken cancellationToken=default);
 }

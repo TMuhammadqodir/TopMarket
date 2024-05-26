@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Service.DTOs.OrderStates;
+using Service.DTOs.OrderStatuses;
 using Service.Interfaces;
 using TopMarket.Models;
 

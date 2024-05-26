@@ -9,6 +9,7 @@ using Service.Exceptions;
 using Service.Extensions;
 using Service.Helpers;
 using Service.Interfaces;
+using Service.Validators.Countries;
 
 namespace Service.Services;
 
@@ -17,10 +18,12 @@ public class CountryService:ICountryService
 
     private readonly IMapper mapper;
     private readonly IRepository<Country> countryRepository;
+    private readonly CountryCreationValidator countryCreationValidator;
     public CountryService(IMapper mapper, IRepository<Country> countryRepository)
     {
         this.mapper = mapper;
         this.countryRepository = countryRepository;
+        this.countryCreationValidator = new CountryCreationValidator();
     }
 
     public async Task<bool> SetAsync(CancellationToken cancellationToken = default)
@@ -35,6 +38,10 @@ public class CountryService:ICountryService
 
         foreach (var country in countries)
         {
+            var resultValidator = this.countryCreationValidator.Validate(country);
+            if (resultValidator.Errors.Any())
+                throw new CustomException(403, resultValidator.Errors.FirstOrDefault().ToString());
+
             var mappedCountry = this.mapper.Map<Country>(country);
             await this.countryRepository.AddAsync(mappedCountry);
             await this.countryRepository.SaveAsync(cancellationToken);

@@ -11,7 +11,7 @@ using Service.DTOs.Carts;
 using Service.DTOs.Categories;
 using Service.DTOs.Countries;
 using Service.DTOs.Districts;
-using Service.DTOs.OrderStates;
+using Service.DTOs.OrderStatuses;
 using Service.DTOs.ProductAttachments;
 using Service.DTOs.ProductConfigurations;
 using Service.DTOs.ProductItemAttachments;

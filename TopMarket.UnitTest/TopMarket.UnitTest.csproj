@@ -23,8 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ValidatorTests\Countries\" />
-    <Folder Include="ValidatorTests\Districts\" />
+    <ProjectReference Include="..\src\Service\Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ValidatorTests\Promations\" />
   </ItemGroup>
 
 </Project>

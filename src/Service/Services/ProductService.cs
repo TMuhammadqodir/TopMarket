@@ -17,7 +17,7 @@ public class ProductService : IProductService
 {
     private readonly ILogger<ProductService> logger;
     private readonly IMapper mapper;
-    private readonly IRepository<Product> repository;
+    private readonly IRepository<Product> productRepository;
     private readonly IAttachmentService attachmentService;
     private readonly IRepository<Category> categoryRepository;
     private readonly IProductAttachmentService productAttachmentService;
@@ -25,14 +25,14 @@ public class ProductService : IProductService
     public ProductService(
         ILogger<ProductService> logger,
         IMapper mapper,
-        IRepository<Product> repository,
+        IRepository<Product> productRepository,
         IAttachmentService attachmentService,
         IRepository<Category> categoryRepository,
         IProductAttachmentService productAttachmentService)
     {
         this.logger = logger;
         this.mapper = mapper;
-        this.repository = repository;
+        this.productRepository = productRepository;
         this.attachmentService = attachmentService;
         this.categoryRepository = categoryRepository;
         this.productAttachmentService = productAttachmentService;
@@ -40,15 +40,15 @@ public class ProductService : IProductService
 
     public async Task<ProductResultDto> CreateAsync(ProductCreationDto dto, CancellationToken cancellationToken = default)
     {
-        var existCategory = await this.categoryRepository.GetAsync(c => c.Id == dto.CategoryId, cancellationToken: cancellationToken)
+        var existCategory = await this.categoryRepository.GetAsync(cr => cr.Id == dto.CategoryId, cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This category was not found with {dto.CategoryId}");
 
         if (await this.doesProductExistAsync(dto.Name, cancellationToken))
             throw new AlreadyExistException($"Product with name '{dto.Name}' already exists.");
 
         var newProduct = this.mapper.Map<Product>(dto);
-        await this.repository.AddAsync(newProduct, cancellationToken);
-        await this.repository.SaveAsync(cancellationToken);
+        await this.productRepository.AddAsync(newProduct, cancellationToken);
+        await this.productRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<ProductResultDto>(newProduct);
     }
@@ -57,7 +57,7 @@ public class ProductService : IProductService
     {
         string[] inclusion = { "Category", "ProductAttachments.Product" };
 
-        IQueryable<Product> query = this.repository.GetAll(includes: inclusion);
+        IQueryable<Product> query = this.productRepository.GetAll(includes: inclusion);
 
         if (paginationParams is not null)
             query = query.ToPaginate(paginationParams);
@@ -71,7 +71,7 @@ public class ProductService : IProductService
     {
         string[] inclusion = { "Category", "ProductAttachments.Attachment", "ProductItems" };
         
-        var product = await this.repository.GetAsync(expression, inclusion, cancellationToken)
+        var product = await this.productRepository.GetAsync(expression, inclusion, cancellationToken)
             ?? throw new NotFoundException("Product with such properties is not found.");
 
         return this.mapper.Map<ProductResultDto>(product);
@@ -81,7 +81,7 @@ public class ProductService : IProductService
     {
         string[] inclusion = { "Category", "ProductAttachments.Attachment", "ProductItems" };
 
-        var product = await this.repository.GetAsync(id, inclusion)
+        var product = await this.productRepository.GetAsync(id, inclusion)
             ?? throw new NotFoundException("Product with such id is not found.");
 
         return this.mapper.Map<ProductResultDto>(product);
@@ -90,8 +90,8 @@ public class ProductService : IProductService
     public async Task<IEnumerable<ProductResultDto>> RetrieveByCategoryIdAsync(long categoryId, CancellationToken cancellationToken = default)
     {
         string[] inclusion = { "Category", "ProductAttachments.Attachment" };
-        var products = await this.repository
-                .GetAll(p => p.CategoryId == categoryId, includes: inclusion)
+        var products = await this.productRepository
+                .GetAll(pr => pr.CategoryId == categoryId, includes: inclusion)
                 .ToListAsync(cancellationToken: cancellationToken);
 
         return this.mapper.Map<IEnumerable<ProductResultDto>>(products);
@@ -99,11 +99,11 @@ public class ProductService : IProductService
 
     public async Task<ProductResultDto> ModifyAsync(ProductUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        var product = await this.repository
+        var product = await this.productRepository
                 .GetAsync(dto.Id, new string[] { "Category", "ProductAttachments.Attachment"}, cancellationToken)
             ?? throw new NotFoundException("Product is not found.");
 
-        var existCategory = await this.categoryRepository.GetAsync(c => c.Id == dto.CategoryId, cancellationToken: cancellationToken)
+        var existCategory = await this.categoryRepository.GetAsync(cr => cr.Id == dto.CategoryId, cancellationToken: cancellationToken)
             ?? throw new NotFoundException($"This category was not found with {dto.CategoryId}");
 
         if (!product.Name.Equals(dto.Name, StringComparison.OrdinalIgnoreCase))
@@ -111,30 +111,30 @@ public class ProductService : IProductService
                 throw new AlreadyExistException($"Product with name '{dto.Name}' already exists.");
 
         this.mapper.Map(dto, product);
-        this.repository.Update(product);
-        await this.repository.SaveAsync(cancellationToken);
+        this.productRepository.Update(product);
+        await this.productRepository.SaveAsync(cancellationToken);
 
         return this.mapper.Map<ProductResultDto>(product);
     }
 
     public async Task<bool> RemoveAsync(long id, bool destroy = false, CancellationToken cancellationToken = default)
     {
-        var product = await this.repository.GetAsync(id, cancellationToken: cancellationToken)
+        var product = await this.productRepository.GetAsync(id, cancellationToken: cancellationToken)
             ?? throw new NotFoundException("Product with such id is not found.");
 
         if (destroy)
-            this.repository.Destroy(product);
+            this.productRepository.Destroy(product);
         else
-            this.repository.Delete(product);
+            this.productRepository.Delete(product);
 
-        await this.repository.SaveAsync(cancellationToken);
+        await this.productRepository.SaveAsync(cancellationToken);
 
         return true;
     }
 
     private async ValueTask<bool> doesProductExistAsync(string name, CancellationToken cancellationToken = default)
     {
-        var product = await this.repository
+        var product = await this.productRepository
             .GetAsync(p => p.Name.ToLower() == name.ToLower(), cancellationToken: cancellationToken);
         return product != null;
     }
@@ -143,8 +143,8 @@ public class ProductService : IProductService
     {
         var inclusion = new string[] { "Category", "ProductAttachments.Attachment" };
 
-        var product = await this.repository
-                .GetAsync(p => p.Id == productId, inclusion, cancellationToken)
+        var product = await this.productRepository
+                .GetAsync(pr => pr.Id == productId, inclusion, cancellationToken)
             ?? throw new NotFoundException($"Product with id = {productId} is not found.");
         
         var newAttachment = await this.attachmentService.UploadImageAsync(dto);

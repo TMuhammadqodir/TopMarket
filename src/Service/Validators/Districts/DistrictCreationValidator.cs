@@ -5,34 +5,34 @@ namespace Service.Validators.Districts;
 
 public class DistrictCreationValidator : AbstractValidator<DistrictCreationDto>
 {
-    DistrictCreationValidator()
+    public DistrictCreationValidator()
     {
         RuleFor(item => item.NameUz)
             .NotEmpty()
-            .WithMessage("Country cannot be empty")
+                .WithMessage("Country cannot be empty")
             .MaximumLength(128)
-            .WithMessage("This lastname very long")
-            .MinimumLength(1)
-            .WithMessage("This lastname very short");
+                .WithMessage("This lastname very long")
+            .MinimumLength(2)
+                .WithMessage("This lastname very short");
 
         RuleFor(item => item.NameOz)
             .NotEmpty()
-            .WithMessage("Country code cannot be empty")
+                .WithMessage("Country code cannot be empty")
             .MaximumLength(128)
-            .WithMessage("This lastname very long")
-            .MinimumLength(1)
-            .WithMessage("This lastname very short");
+                .WithMessage("This lastname very long")
+            .MinimumLength(2)
+                .WithMessage("This lastname very short");
 
         RuleFor(item => item.NameRu)
             .NotEmpty()
-            .WithMessage("Country code cannot be empty")
+                .WithMessage("Country code cannot be empty")
             .MaximumLength(128)
-            .WithMessage("This lastname very long")
-            .MinimumLength(1)
-            .WithMessage("This lastname very short");
+                .WithMessage("This lastname very long")
+            .MinimumLength(2)
+                .WithMessage("This lastname very short");
 
         RuleFor(item => item.RegionId)
-            .NotNull()
-            .WithMessage("id cannot be null");
+            .GreaterThan(0)
+                .WithMessage("id cannot be negative or 0");
     }
 }
