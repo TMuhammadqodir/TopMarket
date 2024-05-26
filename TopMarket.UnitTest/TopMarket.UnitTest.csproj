@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="ValidatorTests\Promations\" />
-    <Folder Include="ValidatorTests\Products\" />
   </ItemGroup>
 
 </Project>
