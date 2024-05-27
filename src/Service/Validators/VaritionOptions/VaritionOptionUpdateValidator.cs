@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Service.DTOs.Variations;
+using Service.DTOs.VariationOptions;
 
-namespace Service.DTOs.VariationOptions;
+namespace Service.Validators.VaritionOptions;
 
 public class VariationOptionUpdateValidator : AbstractValidator<VariationOptionUpdateDto>
 {
