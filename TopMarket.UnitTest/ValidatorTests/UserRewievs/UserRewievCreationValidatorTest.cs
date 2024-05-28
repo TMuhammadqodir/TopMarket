@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TopMarket.UnitTest.ValidatorTests.UserRewievs;
 
-namespace TopMarket.UnitTest.ValidatorTests.UserRewievs
+public class UserRewievCreationValidatorTest
 {
-    internal class UserRewievCreationValidatorTest
-    {
-    }
 }

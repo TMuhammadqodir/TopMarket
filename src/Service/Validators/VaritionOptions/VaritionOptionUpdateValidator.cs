@@ -8,10 +8,13 @@ public class VariationOptionUpdateValidator : AbstractValidator<VariationOptionU
     public VariationOptionUpdateValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("Id must be greater than zero.");
+            .GreaterThan(0)
+                .WithMessage("Id must be greater than zero.");
 
         RuleFor(x => x.Value)
-            .NotEmpty().WithMessage("Value must not be empty.")
-            .Length(1, 100).WithMessage("Value length must be between 1 and 100 characters.");
+            .NotEmpty()
+                .WithMessage("Value must not be empty.")
+            .Length(1, 128)
+                .WithMessage("Value length must be between 1 and 128 characters.");
     }
 }
