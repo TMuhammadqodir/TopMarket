@@ -6,18 +6,18 @@ using Service.Validators.Promations;
 
 public class PromotionUpdateDtoValidatorTest
 {
-    private readonly PromotionUpdateValidator validator;
+    private readonly PromotionUpdateValidator promationUpdateValidator;
 
     public PromotionUpdateDtoValidatorTest()
     {
-        this.validator = new PromotionUpdateValidator();
+        this.promationUpdateValidator = new PromotionUpdateValidator();
     }
 
     [Fact]
     public void ShouldHaveErrorWhenIdIsZero()
     {
         var model = new PromotionUpdateDto { Id = 0 };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 
@@ -25,7 +25,7 @@ public class PromotionUpdateDtoValidatorTest
     public void ShouldHaveErrorWhenNameIsEmpty()
     {
         var model = new PromotionUpdateDto { Name = string.Empty };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
@@ -33,7 +33,7 @@ public class PromotionUpdateDtoValidatorTest
     public void ShouldHaveErrorWhenNameIsTooLong()
     {
         var model = new PromotionUpdateDto { Name = new string('a', 101) };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
@@ -41,7 +41,7 @@ public class PromotionUpdateDtoValidatorTest
     public void ShouldHaveErrorWhenDescriptionIsEmpty()
     {
         var model = new PromotionUpdateDto { Description = string.Empty };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Description);
     }
 
@@ -49,7 +49,7 @@ public class PromotionUpdateDtoValidatorTest
     public void ShouldHaveErrorWhenDescriptionIsTooLong()
     {
         var model = new PromotionUpdateDto { Description = new string('a', 501) };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Description);
     }
 
@@ -57,11 +57,11 @@ public class PromotionUpdateDtoValidatorTest
     public void ShouldHaveErrorWhenDiscountRateIsOutOfRange()
     {
         var model = new PromotionUpdateDto { DiscountRate = -1 };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.DiscountRate);
 
         model = new PromotionUpdateDto { DiscountRate = 101 };
-        result = this.validator.TestValidate(model);
+        result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.DiscountRate);
     }
 
@@ -73,7 +73,7 @@ public class PromotionUpdateDtoValidatorTest
             StartDate = DateTime.Now.AddDays(1),
             EndDate = DateTime.Now
         };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.StartDate);
     }
 
@@ -85,7 +85,7 @@ public class PromotionUpdateDtoValidatorTest
             StartDate = DateTime.Now,
             EndDate = DateTime.Now.AddDays(-1)
         };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.EndDate);
     }
 
@@ -101,7 +101,7 @@ public class PromotionUpdateDtoValidatorTest
             StartDate = DateTime.Now,
             EndDate = DateTime.Now.AddDays(1)
         };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationUpdateValidator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

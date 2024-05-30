@@ -6,18 +6,18 @@ using Service.Validators.Promations;
 
 public class PromotionCreationDtoValidatorTest
 {
-    private readonly PromotionCreationValidator validator;
+    private readonly PromotionCreationValidator promationCreationValidator;
 
     public PromotionCreationDtoValidatorTest()
     {
-        this.validator = new PromotionCreationValidator();
+        this.promationCreationValidator = new PromotionCreationValidator();
     }
 
     [Fact]
     public void ShouldHaveErrorWhenNameIsEmpty()
     {
         var model = new PromotionCreationDto { Name = string.Empty };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
@@ -25,7 +25,7 @@ public class PromotionCreationDtoValidatorTest
     public void ShouldHaveErrorWhenNameIsTooLong()
     {
         var model = new PromotionCreationDto { Name = new string('a', 101) };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
@@ -33,7 +33,7 @@ public class PromotionCreationDtoValidatorTest
     public void ShouldHaveErrorWhenDescriptionIsEmpty()
     {
         var model = new PromotionCreationDto { Description = string.Empty };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Description);
     }
 
@@ -41,7 +41,7 @@ public class PromotionCreationDtoValidatorTest
     public void ShouldHaveErrorWhenDescriptionIsTooLong()
     {
         var model = new PromotionCreationDto { Description = new string('a', 501) };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Description);
     }
 
@@ -49,11 +49,11 @@ public class PromotionCreationDtoValidatorTest
     public void ShouldHaveErrorWhenDiscountRateIsOutOfRange()
     {
         var model = new PromotionCreationDto { DiscountRate = -1 };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.DiscountRate);
 
         model = new PromotionCreationDto { DiscountRate = 101 };
-        result = this.validator.TestValidate(model);
+        result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.DiscountRate);
     }
 
@@ -65,7 +65,7 @@ public class PromotionCreationDtoValidatorTest
             StartDate = DateTime.Now.AddDays(1),
             EndDate = DateTime.Now
         };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.StartDate);
     }
 
@@ -77,7 +77,7 @@ public class PromotionCreationDtoValidatorTest
             StartDate = DateTime.Now,
             EndDate = DateTime.Now.AddDays(-1)
         };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.EndDate);
     }
 
@@ -92,7 +92,7 @@ public class PromotionCreationDtoValidatorTest
             StartDate = DateTime.Now,
             EndDate = DateTime.Now.AddDays(1)
         };
-        var result = this.validator.TestValidate(model);
+        var result = this.promationCreationValidator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
     }
 }
