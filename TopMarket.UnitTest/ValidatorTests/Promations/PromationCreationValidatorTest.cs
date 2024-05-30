@@ -4,17 +4,17 @@ using Xunit;
 using System;
 using Service.Validators.Promations;
 
-public class PromotionCreationDtoValidatorTests
+public class PromotionCreationDtoValidatorTest
 {
     private readonly PromotionCreationValidator validator;
 
-    public PromotionCreationDtoValidatorTests()
+    public PromotionCreationDtoValidatorTest()
     {
         this.validator = new PromotionCreationValidator();
     }
 
     [Fact]
-    public void Should_Have_Error_When_Name_Is_Empty()
+    public void ShouldHaveErrorWhenNameIsEmpty()
     {
         var model = new PromotionCreationDto { Name = string.Empty };
         var result = this.validator.TestValidate(model);
@@ -22,7 +22,7 @@ public class PromotionCreationDtoValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_Name_Is_Too_Long()
+    public void ShouldHaveErrorWhenNameIsTooLong()
     {
         var model = new PromotionCreationDto { Name = new string('a', 101) };
         var result = this.validator.TestValidate(model);
@@ -30,7 +30,7 @@ public class PromotionCreationDtoValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_Description_Is_Empty()
+    public void ShouldHaveErrorWhenDescriptionIsEmpty()
     {
         var model = new PromotionCreationDto { Description = string.Empty };
         var result = this.validator.TestValidate(model);
@@ -38,7 +38,7 @@ public class PromotionCreationDtoValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_Description_Is_Too_Long()
+    public void ShouldHaveErrorWhenDescriptionIsTooLong()
     {
         var model = new PromotionCreationDto { Description = new string('a', 501) };
         var result = this.validator.TestValidate(model);
@@ -46,7 +46,7 @@ public class PromotionCreationDtoValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_DiscountRate_Is_Out_Of_Range()
+    public void ShouldHaveErrorWhenDiscountRateIsOutOfRange()
     {
         var model = new PromotionCreationDto { DiscountRate = -1 };
         var result = this.validator.TestValidate(model);
@@ -58,7 +58,7 @@ public class PromotionCreationDtoValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_StartDate_Is_Not_Before_EndDate()
+    public void ShouldHaveErrorWhenStartDateIsNotBeforeEndDate()
     {
         var model = new PromotionCreationDto
         {
@@ -70,7 +70,7 @@ public class PromotionCreationDtoValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_EndDate_Is_Not_After_StartDate()
+    public void ShouldHaveErrorWhenEndDateIsNotAfterStartDate()
     {
         var model = new PromotionCreationDto
         {
@@ -82,7 +82,7 @@ public class PromotionCreationDtoValidatorTests
     }
 
     [Fact]
-    public void Should_Not_Have_Error_When_Model_Is_Valid()
+    public void ShouldNotHaveErrorWhenModelIsValid()
     {
         var model = new PromotionCreationDto
         {
