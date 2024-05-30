@@ -1,6 +1,4 @@
-﻿using Service.DTOs.Variations;
-
-namespace Service.DTOs.VariationOptions;
+﻿namespace Service.DTOs.VariationOptions;
 
 public class VariationOptionFeatureResult
 {

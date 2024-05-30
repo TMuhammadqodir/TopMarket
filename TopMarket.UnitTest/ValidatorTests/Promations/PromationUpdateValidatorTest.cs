@@ -4,19 +4,27 @@ using Xunit;
 using System;
 using Service.Validators.Promations;
 
-public class PromotionCreationDtoValidatorTest
+public class PromotionUpdateDtoValidatorTest
 {
-    private readonly PromotionCreationValidator validator;
+    private readonly PromotionUpdateValidator validator;
 
-    public PromotionCreationDtoValidatorTest()
+    public PromotionUpdateDtoValidatorTest()
     {
-        this.validator = new PromotionCreationValidator();
+        this.validator = new PromotionUpdateValidator();
+    }
+
+    [Fact]
+    public void ShouldHaveErrorWhenIdIsZero()
+    {
+        var model = new PromotionUpdateDto { Id = 0 };
+        var result = this.validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 
     [Fact]
     public void ShouldHaveErrorWhenNameIsEmpty()
     {
-        var model = new PromotionCreationDto { Name = string.Empty };
+        var model = new PromotionUpdateDto { Name = string.Empty };
         var result = this.validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
@@ -24,7 +32,7 @@ public class PromotionCreationDtoValidatorTest
     [Fact]
     public void ShouldHaveErrorWhenNameIsTooLong()
     {
-        var model = new PromotionCreationDto { Name = new string('a', 101) };
+        var model = new PromotionUpdateDto { Name = new string('a', 101) };
         var result = this.validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
@@ -32,7 +40,7 @@ public class PromotionCreationDtoValidatorTest
     [Fact]
     public void ShouldHaveErrorWhenDescriptionIsEmpty()
     {
-        var model = new PromotionCreationDto { Description = string.Empty };
+        var model = new PromotionUpdateDto { Description = string.Empty };
         var result = this.validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Description);
     }
@@ -40,7 +48,7 @@ public class PromotionCreationDtoValidatorTest
     [Fact]
     public void ShouldHaveErrorWhenDescriptionIsTooLong()
     {
-        var model = new PromotionCreationDto { Description = new string('a', 501) };
+        var model = new PromotionUpdateDto { Description = new string('a', 501) };
         var result = this.validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Description);
     }
@@ -48,11 +56,11 @@ public class PromotionCreationDtoValidatorTest
     [Fact]
     public void ShouldHaveErrorWhenDiscountRateIsOutOfRange()
     {
-        var model = new PromotionCreationDto { DiscountRate = -1 };
+        var model = new PromotionUpdateDto { DiscountRate = -1 };
         var result = this.validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.DiscountRate);
 
-        model = new PromotionCreationDto { DiscountRate = 101 };
+        model = new PromotionUpdateDto { DiscountRate = 101 };
         result = this.validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.DiscountRate);
     }
@@ -60,7 +68,7 @@ public class PromotionCreationDtoValidatorTest
     [Fact]
     public void ShouldHaveErrorWhenStartDateIsNotBeforeEndDate()
     {
-        var model = new PromotionCreationDto
+        var model = new PromotionUpdateDto
         {
             StartDate = DateTime.Now.AddDays(1),
             EndDate = DateTime.Now
@@ -72,7 +80,7 @@ public class PromotionCreationDtoValidatorTest
     [Fact]
     public void ShouldHaveErrorWhenEndDateIsNotAfterStartDate()
     {
-        var model = new PromotionCreationDto
+        var model = new PromotionUpdateDto
         {
             StartDate = DateTime.Now,
             EndDate = DateTime.Now.AddDays(-1)
@@ -84,8 +92,9 @@ public class PromotionCreationDtoValidatorTest
     [Fact]
     public void ShouldNotHaveErrorWhenModelIsValid()
     {
-        var model = new PromotionCreationDto
+        var model = new PromotionUpdateDto
         {
+            Id = 1,
             Name = "Valid Name",
             Description = "Valid Description",
             DiscountRate = 50,

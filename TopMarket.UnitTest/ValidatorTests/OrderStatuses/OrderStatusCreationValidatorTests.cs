@@ -8,7 +8,7 @@ public class OrderStatusCreationValidatorTests
 
     public OrderStatusCreationValidatorTests()
     {
-        this.validator = new OrderStatusCreationValidator();
+        this.validator = new OrderStatusCreationValidator(); //TODO Saidkamol aka: Xatolik bermoqda
     }
 
     [Theory]
