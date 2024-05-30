@@ -18,7 +18,7 @@ public class CartItemUpdateValidatorTests
     [InlineData(0, 0, 1, 0, 0)]
     [InlineData(0, 0, 0, 1, 0)]
     [InlineData(0, 0, 0, 0, 1)]
-    public void ShouldBeEqualToFalse(long id, int cartId, long productItemId, decimal price, float quantity)
+    public void Should_Be_Equal_To_False(long id, int cartId, long productItemId, decimal price, float quantity)
     {
         var cartItem = new CartItemUpdateDto
         {
@@ -35,7 +35,7 @@ public class CartItemUpdateValidatorTests
     [Theory]
     [InlineData(1, 2, 3, 0.04d, 0.5f)]
     [InlineData(1, 12, 123, 1234, 12345)]
-    public void ShouldBeEqualToTrue(long id, int cartId, long productItemId, decimal price, float quantity)
+    public void Should_Be_EqualToTrue(long id, int cartId, long productItemId, decimal price, float quantity)
     {
         var cartItem = new CartItemUpdateDto
         {

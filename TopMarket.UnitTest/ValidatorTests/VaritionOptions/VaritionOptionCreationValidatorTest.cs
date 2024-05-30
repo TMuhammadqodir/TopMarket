@@ -4,18 +4,18 @@ using Service.Validators.VaritionOptions;
 
 public class VariationOptionCreationValidatorTest
 {
-    private readonly VariationOptionCreationValidator validator;
+    private readonly VariationOptionCreationValidator variationOptionCreationValidator;
 
     public VariationOptionCreationValidatorTest()
     {
-        validator = new VariationOptionCreationValidator();
+        this.variationOptionCreationValidator = new VariationOptionCreationValidator();
     }
 
     [Fact]
     public void ShouldHaveErrorWhenValueIsEmpty()
     {
         var model = new VariationOptionCreationDto { Value = string.Empty };
-        var result = validator.TestValidate(model);
+        var result = this.variationOptionCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Value);
     }
 
@@ -23,7 +23,7 @@ public class VariationOptionCreationValidatorTest
     public void ShouldHaveErrorWhenValueIsTooLong()
     {
         var model = new VariationOptionCreationDto { Value = new string('a', 129) };
-        var result = validator.TestValidate(model);
+        var result = this.variationOptionCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Value);
     }
 
@@ -31,7 +31,7 @@ public class VariationOptionCreationValidatorTest
     public void ShouldHaveErrorWhenVariationIdIsZero()
     {
         var model = new VariationOptionCreationDto { VariationId = 0 };
-        var result = validator.TestValidate(model);
+        var result = this.variationOptionCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.VariationId);
     }
 
@@ -39,7 +39,7 @@ public class VariationOptionCreationValidatorTest
     public void ShouldHaveErrorWhenProductItemIdIsZero()
     {
         var model = new VariationOptionCreationDto { ProductItemId = 0 };
-        var result = validator.TestValidate(model);
+        var result = this.variationOptionCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.ProductItemId);
     }
 
@@ -52,7 +52,7 @@ public class VariationOptionCreationValidatorTest
             VariationId = 1,
             ProductItemId = 1
         };
-        var result = validator.TestValidate(model);
+        var result = this.variationOptionCreationValidator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
     }
 }

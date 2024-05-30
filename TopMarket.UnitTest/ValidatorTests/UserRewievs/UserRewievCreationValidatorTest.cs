@@ -5,18 +5,18 @@ using Service.Validators.UserRewievs;
 
 public class UserRewievCreationValidatorTest
 {
-    private readonly UserRewievCreationValidator validator;
+    private readonly UserRewievCreationValidator userRewievCreationValidator;
 
     public UserRewievCreationValidatorTest()
     {
-        validator = new UserRewievCreationValidator();
+        this.userRewievCreationValidator = new UserRewievCreationValidator();
     }
 
     [Fact]
     public void ShouldHaveErrorWhenUserIdIsZero()
     {
         var model = new UserRewievCreationDto { UserId = 0 };
-        var result = validator.TestValidate(model);
+        var result = this.userRewievCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.UserId);
     }
 
@@ -24,7 +24,7 @@ public class UserRewievCreationValidatorTest
     public void ShouldHaveErrorWhenOrderProductIdIsZero()
     {
         var model = new UserRewievCreationDto { OrderProductId = 0 };
-        var result = validator.TestValidate(model);
+        var result = this.userRewievCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.OrderProductId);
     }
 
@@ -32,7 +32,7 @@ public class UserRewievCreationValidatorTest
     public void ShouldHaveErrorWhenCommentIsEmpty()
     {
         var model = new UserRewievCreationDto { Comment = string.Empty };
-        var result = validator.TestValidate(model);
+        var result = this.userRewievCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Comment);
     }
 
@@ -40,7 +40,7 @@ public class UserRewievCreationValidatorTest
     public void ShouldHaveErrorWhenCommentIsTooLong()
     {
         var model = new UserRewievCreationDto { Comment = new string('a', 513) };
-        var result = validator.TestValidate(model);
+        var result = this.userRewievCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Comment);
     }
 
@@ -48,7 +48,7 @@ public class UserRewievCreationValidatorTest
     public void ShouldHaveErrorWhenRatingValueIsInvalid()
     {
         var model = new UserRewievCreationDto { RatingValue = (ERating)6 };
-        var result = validator.TestValidate(model);
+        var result = this.userRewievCreationValidator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.RatingValue);
     }
 
@@ -62,7 +62,7 @@ public class UserRewievCreationValidatorTest
             RatingValue = ERating.Good,
             Comment = "This is a valid comment."
         };
-        var result = validator.TestValidate(model);
+        var result = this.userRewievCreationValidator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
     }
 }
