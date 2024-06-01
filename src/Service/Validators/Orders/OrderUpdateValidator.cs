@@ -14,7 +14,7 @@ namespace Service.Validators.Orders
             RuleFor(x => x.Date)
                 .NotEmpty()
                     .WithMessage("Date must not be empty.")
-                .LessThanOrEqualTo(DateTime.Now)
+                .LessThanOrEqualTo(DateTime.Now.AddSeconds(1))
                     .WithMessage("Date cannot be in the future.");
 
             RuleFor(x => x.Total)

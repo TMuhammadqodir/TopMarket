@@ -1,7 +1,8 @@
 ﻿using FluentValidation.TestHelper;
 using Service.DTOs.OrderLines;
 using Service.Validators.OrderLines;
-using Xunit;
+
+namespace TopMarket.UnitTest.ValidatorTests.OrderLines;
 
 public class OrderLineCreationValidatorTest
 {

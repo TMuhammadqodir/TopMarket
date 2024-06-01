@@ -3,6 +3,7 @@ using FluentValidation.TestHelper;
 using Service.DTOs.UserRewiev;
 using Service.Validators.UserRewievs;
 
+namespace TopMarket.UnitTest.ValidatorTests.UserRewievs;
 public class UserRewievCreationValidatorTest
 {
     private readonly UserRewievCreationValidator userRewievCreationValidator;

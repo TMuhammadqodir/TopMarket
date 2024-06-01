@@ -2,6 +2,7 @@
 using Service.DTOs.VariationOptions;
 using Service.Validators.VaritionOptions;
 using Xunit;
+namespace TopMarket.UnitTest.ValidatorTests.VaritionOption;
 
 public class VariationOptionUpdateValidatorTests
 {
