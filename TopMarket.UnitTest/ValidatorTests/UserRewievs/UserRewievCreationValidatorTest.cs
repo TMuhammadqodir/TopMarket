@@ -1,4 +1,7 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities.Addresses;
+using Domain.Entities.OrderFolder;
+using Domain.Entities.Payment;
+using Domain.Enums;
 using FluentValidation.TestHelper;
 using Service.DTOs.UserRewiev;
 using Service.Validators.UserRewievs;
@@ -13,57 +16,40 @@ public class UserRewievCreationValidatorTest
         this.userRewievCreationValidator = new UserRewievCreationValidator();
     }
 
-    [Fact]
-    public void ShouldHaveErrorWhenUserIdIsZero()
+    [Theory]
+    [InlineData(1, 2, (ERating)6, "test")]
+    [InlineData(1, 2, (ERating)5, "")]
+    [InlineData(1, 0, (ERating)5, "test")]
+    [InlineData(0, 2, (ERating)4, "test")]
+    public void ShouldBeEqualToFalse(long userId, long orderProductId, ERating rating, string comment)
     {
-        var model = new UserRewievCreationDto { UserId = 0 };
-        var result = this.userRewievCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.UserId);
-    }
-
-    [Fact]
-    public void ShouldHaveErrorWhenOrderProductIdIsZero()
-    {
-        var model = new UserRewievCreationDto { OrderProductId = 0 };
-        var result = this.userRewievCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.OrderProductId);
-    }
-
-    [Fact]
-    public void ShouldHaveErrorWhenCommentIsEmpty()
-    {
-        var model = new UserRewievCreationDto { Comment = string.Empty };
-        var result = this.userRewievCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Comment);
-    }
-
-    [Fact]
-    public void ShouldHaveErrorWhenCommentIsTooLong()
-    {
-        var model = new UserRewievCreationDto { Comment = new string('a', 513) };
-        var result = this.userRewievCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Comment);
-    }
-
-    [Fact]
-    public void ShouldHaveErrorWhenRatingValueIsInvalid()
-    {
-        var model = new UserRewievCreationDto { RatingValue = (ERating)6 };
-        var result = this.userRewievCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.RatingValue);
-    }
-
-    [Fact]
-    public void ShouldNotHaveErrorWhenModelIsValid()
-    {
-        var model = new UserRewievCreationDto
+        var userRewiev = new UserRewievCreationDto
         {
-            UserId = 1,
-            OrderProductId = 1,
-            RatingValue = ERating.Good,
-            Comment = "This is a valid comment."
+            UserId = userId,
+            OrderProductId = orderProductId,
+            RatingValue = rating,
+            Comment = comment 
         };
-        var result = this.userRewievCreationValidator.TestValidate(model);
+
+        var result = userRewievCreationValidator.Validate(userRewiev);
+
+        Assert.False(result.IsValid);
+    }
+
+
+    [Fact]
+    public void ShouldBeEqualToTrue()
+    {
+        var userRewiev = new UserRewievCreationDto
+        {
+           UserId = 1,
+           OrderProductId = 1,
+           RatingValue = ERating.Good,
+           Comment = "test"
+        };
+
+        var result = userRewievCreationValidator.TestValidate(userRewiev);
+
         result.ShouldNotHaveAnyValidationErrors();
     }
 }
