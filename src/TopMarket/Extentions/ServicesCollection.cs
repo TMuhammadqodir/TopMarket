@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Service.DTOs.OrderStatuses;
 using Service.Interfaces;
 using Service.Mappers;
 using Service.Services;
@@ -38,7 +39,6 @@ public static class ServicesCollection
         services.AddScoped<IPromotionCategoryService, PromotionCategoryService>();
         services.AddScoped<IShippingMethodService, ShippingMethodService>();
         services.AddScoped<IOrderStatusService, OrderStatusService>();
-        services.AddValidatorsFromAssemblyContaining<OrderStatusCreationValidator>();
     }
     public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
     {

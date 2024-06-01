@@ -1,14 +1,18 @@
-﻿using Service.DTOs.OrderStatuses;
+﻿using Data.IRepositories;
+using Domain.Entities.OrderFolder;
+using Service.DTOs.OrderStatuses;
+using Moq;
 
 namespace Service.Validators.OrderStatuses;
 
 public class OrderStatusCreationValidatorTests
 {
     private readonly OrderStatusCreationValidator validator;
+    private readonly Mock<IRepository<OrderStatus>> repositoryMock = new();
 
     public OrderStatusCreationValidatorTests()
     {
-        this.validator = new OrderStatusCreationValidator(); //TODO Saidkamol aka: Xatolik bermoqda
+        this.validator = new(this.repositoryMock.Object);
     }
 
     [Theory]
@@ -17,24 +21,20 @@ public class OrderStatusCreationValidatorTests
     [InlineData("abc")] // checking for min length
     public void CheckingForName_ShouldNotBeValid(string name)
     {
-        var orderStatus = new OrderStatusCreationDto
-        {
-            Name = name
-        };
-
-        Assert.False(this.validator.Validate(orderStatus).IsValid);
+        var orderStatus = new OrderStatusCreationDto { Name = name };
+        
+        var validationResult = Task.Run(() => this.validator.ValidateAsync(orderStatus)).Result;
+        Assert.False(validationResult.IsValid);
     }
 
     [Theory]
     [InlineData('a')]
     public void CheckingForNameMaxLength_ShouldNotBeValid(char c)
     {
-        var orderStatus = new OrderStatusCreationDto
-        {
-            Name = new string(c, 101)
-        };
+        var orderStatus = new OrderStatusCreationDto { Name = new string(c, 101) };
 
-        Assert.False(this.validator.Validate(orderStatus).IsValid);
+        var validationResult = Task.Run(() => this.validator.ValidateAsync(orderStatus)).Result;
+        Assert.False(validationResult.IsValid);
     }
 
     [Theory]
@@ -42,11 +42,9 @@ public class OrderStatusCreationValidatorTests
     [InlineData("OrderStatus1")]
     public void CheckingForName_ShouldBeValid(string name)
     {
-        var orderStatus = new OrderStatusCreationDto
-        {
-            Name = name
-        };
+        var orderStatus = new OrderStatusCreationDto { Name = name };
 
-        Assert.True(this.validator.Validate(orderStatus).IsValid);
+        var validationResult = Task.Run(() => this.validator.ValidateAsync(orderStatus)).Result;
+        Assert.True(validationResult.IsValid);
     }
 }
