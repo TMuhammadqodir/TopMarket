@@ -1,21 +1,26 @@
-﻿using Service.DTOs.OrderStatuses;
+﻿using Data.IRepositories;
+using Domain.Entities.OrderFolder;
+using FluentValidation;
+using Moq;
+using Service.DTOs.OrderStatuses;
 
 namespace Service.Validators.OrderStatuses;
 
 public class OrderStatusUpdateValidatorTests
 {
     private readonly OrderStatusUpdateValidator validator;
+    private readonly Mock<IRepository<OrderStatus>> repositoryMock = new();
 
     public OrderStatusUpdateValidatorTests()
     {
-        this.validator = new OrderStatusUpdateValidator();
+        this.validator = new(this.repositoryMock.Object);
     }
 
     [Theory]
     [InlineData(default, default)]
     [InlineData(0L, "")]
     [InlineData(1L, "")]
-    [InlineData(1L, "abc")]// checking for min length
+    [InlineData(1L, "abc")] // checking for min length
     public void CheckingForName_ShouldNotBeValid(long id, string name)
     {
         var orderStatus = new OrderStatusUpdateDto
@@ -24,7 +29,8 @@ public class OrderStatusUpdateValidatorTests
             Name = name
         };
 
-        Assert.False(this.validator.Validate(orderStatus).IsValid);
+        var validationResult = Task.Run(() => this.validator.ValidateAsync(orderStatus)).Result;
+        Assert.False(validationResult.IsValid);
     }
 
     [Theory]
@@ -37,7 +43,8 @@ public class OrderStatusUpdateValidatorTests
             Name = new string(c, 101)
         };
 
-        Assert.False(this.validator.Validate(orderStatus).IsValid);
+        var validationResult = Task.Run(() => this.validator.ValidateAsync(orderStatus)).Result;
+        Assert.False(validationResult.IsValid);
     }
 
     [Theory]
@@ -51,6 +58,7 @@ public class OrderStatusUpdateValidatorTests
             Name = name
         };
 
-        Assert.True(this.validator.Validate(orderStatus).IsValid);
+        var validationResult = Task.Run(() => this.validator.ValidateAsync(orderStatus)).Result;
+        Assert.True(validationResult.IsValid);
     }
 }
