@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using Data.IRepositories;
-using Domain.Entities.ProductFolder;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Data.IRepositories;
+using Domain.Entities.ProductFolder;
 using Service.DTOs.Categories;
 using Service.Exceptions;
 using Service.Interfaces;
 using Service.Validators.Categories;
+using FluentValidation;
 
 namespace Service.Services;
 
