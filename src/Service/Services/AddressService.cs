@@ -1,121 +1,127 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Data.IRepositories;
 using Domain.Configuration;
 using Domain.Entities.Addresses;
-using Microsoft.EntityFrameworkCore;
 using Service.DTOs.Addresses;
 using Service.Exceptions;
 using Service.Extensions;
 using Service.Interfaces;
+using Service.Validators.Addresses;
+using FluentValidation;
 
 namespace Service.Services;
 
-public class AddressService:IAddressService
+public class AddressService : IAddressService
 {
+    private readonly ILogger<AddressService> logger;
     private readonly IMapper mapper;
-    private readonly IRepository<Region> regionRepository;
-    private readonly IRepository<Address> addressRepository;
-    private readonly IRepository<Country> countryRepository;
-    private readonly IRepository<District> districtRepository;
-    public AddressService(
-        IMapper mapper,
-        IRepository<Region> regionRepository,
-        IRepository<Address> addressRepository,
-        IRepository<Country> countryRepository,
-        IRepository<District> districtRepository)
+    private readonly IRepository<Address> repository;
+    private readonly AddressCreationValidator creationDtoValidator;
+    private readonly AddressUpdateValidator updateDtoValidator;
+
+    public AddressService(ILogger<AddressService> logger, IMapper mapper, IRepository<Address> repository)
     {
+        this.logger = logger;
         this.mapper = mapper;
-        this.regionRepository = regionRepository;
-        this.addressRepository = addressRepository;
-        this.countryRepository = countryRepository;
-        this.districtRepository = districtRepository;
+        this.repository = repository;
+        this.creationDtoValidator = new AddressCreationValidator();
+        this.updateDtoValidator = new AddressUpdateValidator();
     }
 
-    public async Task<AddressResultDto> CreateAsync(AddressCreationDto dto)
+    public async Task<AddressResultDto> CreateAsync(AddressCreationDto dto, CancellationToken cancellationToken = default)
     {
-        var existRegion = await this.regionRepository.GetAsync(r => r.Id.Equals(dto.RegionId))
-            ?? throw new NotFoundException($"This regionId was not found with {dto.RegionId}");
+        await this.creationDtoValidator.ValidateAndThrowAsync(dto, cancellationToken);
 
-        var existCountry = await this.countryRepository.GetAsync(r => r.Id.Equals(dto.CountryId))
-            ?? throw new NotFoundException($"This countryId was not found with {dto.CountryId}");
-
-        var existDistrict = await this.districtRepository.GetAsync(r => r.Id.Equals(dto.DistrictId))
-            ?? throw new NotFoundException($"This districtId was not found with {dto.DistrictId}");
-
-        var mappedAddress = this.mapper.Map<Address>(dto);
-        await this.addressRepository.AddAsync(mappedAddress);
-        await this.addressRepository.SaveAsync();
-
-        mappedAddress.Region = existRegion;
-        mappedAddress.Country = existCountry;
-        mappedAddress.District = existDistrict;
-
-        return this.mapper.Map<AddressResultDto>(mappedAddress);
+        try
+        {
+            var newAddress = this.mapper.Map<Address>(dto);
+            await this.repository.AddAsync(newAddress, cancellationToken);
+            await this.repository.SaveAsync(cancellationToken);
+            this.logger.LogInformation("New address has been successfully added.");
+            
+            return this.mapper.Map<AddressResultDto>(newAddress);
+        }
+        catch(Exception ex)
+        {
+            this.logger.LogError(ex, "An error occured while adding new address to the database.");
+            throw;
+        }
     }
 
-    public async Task<AddressResultDto> ModifyAsync(AddressUpdateDto dto)
+    public async Task<AddressResultDto> ModifyAsync(AddressUpdateDto dto, CancellationToken cancellationToken = default)
     {
-        var existAddress = await this.addressRepository.GetAsync(r => r.Id.Equals(dto.Id))
-            ?? throw new NotFoundException($"This id was not found with {dto.Id}");
+        await this.updateDtoValidator.ValidateAndThrowAsync(dto, cancellationToken);
 
-        var existRegion = await this.regionRepository.GetAsync(r => r.Id.Equals(dto.RegionId))
-            ?? throw new NotFoundException($"This regionId was not found with {dto.RegionId}");
+        var address = await this.repository.GetAsync(dto.Id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"Address with id = '{dto.Id}' is not found.");
 
-        var existCountry = await this.countryRepository.GetAsync(r => r.Id.Equals(dto.CountryId))
-            ?? throw new NotFoundException($"This countryId was not found with {dto.CountryId}");
+        try
+        {
+            this.mapper.Map(dto, address);
+            this.repository.Update(address);
+            await this.repository.SaveAsync(cancellationToken);
+            this.logger.LogInformation("Address # {id} has been succesfully updated.", dto.Id);
 
-        var existDistrict = await this.districtRepository.GetAsync(r => r.Id.Equals(dto.DistrictId))
-            ?? throw new NotFoundException($"This districtId was not found with {dto.DistrictId}");
-
-        existAddress.RegionId = existRegion.Id;
-        existAddress.CountryId = existCountry.Id;
-        existAddress.DistrictId = existDistrict.Id;
-       
-        this.mapper.Map(dto, existAddress);
-        this.addressRepository.Update(existAddress);
-        await this.addressRepository.SaveAsync();
-
-        existAddress.Region = existRegion;
-        existAddress.Country = existCountry;
-        existAddress.District = existDistrict;
-
-        return mapper.Map<AddressResultDto>(existAddress);
+            return mapper.Map<AddressResultDto>(address);
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "An error occured while updating the address # {id}", dto.Id);
+            throw;
+        }
     }
 
-    public async Task<bool> RemoveAsync(long id)
+    public async Task<bool> RemoveAsync(long id, bool destroy = false, CancellationToken cancellationToken = default)
     {
-        var existAddress = await this.addressRepository.GetAsync(r => r.Id.Equals(id))
-            ?? throw new NotFoundException($"This id was not found with {id}");
+        var address = await this.repository.GetAsync(id, cancellationToken: cancellationToken)
+            ?? throw new NotFoundException($"Address with id = '{id}' is not found.");
 
-        this.addressRepository.Delete(existAddress);
-        await this.addressRepository.SaveAsync();
+        try
+        {
+            if (destroy)
+                this.repository.Destroy(address);
+            else
+                this.repository.Delete(address);
+            
+            await this.repository.SaveAsync(cancellationToken);
+            this.logger.LogInformation("Address # {id} has been successfully {action}.", id, destroy ? "destroyed" : "deleted");
 
-        return true;
+            return true;
+        }
+        catch(Exception ex)
+        {
+            this.logger.LogError(ex, "An error occured while deleting the address # {id}.", id);
+            return false;
+        }
     }
 
-    public async Task<IEnumerable<AddressResultDto>> RetrieveAllAsync()
+    public async Task<IEnumerable<AddressResultDto>> RetrieveAllAsync(CancellationToken cancellationToken = default)
     {
-        var addresses = await this.addressRepository.GetAll(includes: new[] { "Country", "Region", "District" })
-            .ToListAsync();
+        var inclusion = new[] { "Country", "Region", "District" };
+        var addresses = await this.repository
+                            .GetAll(includes: inclusion)
+                            .ToListAsync(cancellationToken);
 
         return this.mapper.Map<IEnumerable<AddressResultDto>>(addresses);
     }
 
-    public async Task<IEnumerable<AddressResultDto>> RetrieveAllAsync(PaginationParams @params)
+    public async Task<IEnumerable<AddressResultDto>> RetrieveAllAsync(PaginationParams @params, CancellationToken cancellationToken = default)
     {
-        var addresses = await this.addressRepository.GetAll(includes: new[] { "Country", "Region", "District" })
+        var addresses = await this.repository.GetAll(includes: new[] { "Country", "Region", "District" })
             .ToPaginate(@params)
             .ToListAsync();
 
         return this.mapper.Map<IEnumerable<AddressResultDto>>(addresses);
     }
 
-    public async Task<AddressResultDto> RetrieveByIdAsync(long id)
+    public async Task<AddressResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var existAddress = await this.addressRepository.GetAsync(p => p.Id.Equals(id),
-            includes: new[] { "Country", "Region", "District" })
-            ?? throw new NotFoundException($"This id was not found with {id}");
+        var inclusion = new[] { "Country", "Region", "District" };
+        var address = await this.repository.GetAsync(id, inclusion, cancellationToken)
+            ?? throw new NotFoundException($"Address with id = '{id}' is not found.");
 
-        return this.mapper.Map<AddressResultDto>(existAddress);
+        return this.mapper.Map<AddressResultDto>(address);
     }
 }
