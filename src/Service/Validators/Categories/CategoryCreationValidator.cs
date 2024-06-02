@@ -9,10 +9,6 @@ public class CategoryCreationValidator : AbstractValidator<CategoryCreationDto>
     {
         RuleFor(c => c.Name)
             .NotEmpty()
-                .WithMessage("Name should NOT be null or empty.")
-            .MinimumLength(4)
-                .WithMessage("Minimum 'Name' length is 4.")
-            .MaximumLength(100)
-                .WithMessage("Maximum 'Name' length is 100.");
+            .Length(4, 100);
     }
 }

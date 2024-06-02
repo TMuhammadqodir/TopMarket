@@ -101,8 +101,8 @@ public class AddressService : IAddressService
     {
         var inclusion = new[] { "Country", "Region", "District" };
         var addresses = await this.repository
-                            .GetAll(includes: inclusion)
-                            .ToListAsync(cancellationToken);
+            .GetAll(includes: inclusion)
+            .ToListAsync(cancellationToken);
 
         return this.mapper.Map<IEnumerable<AddressResultDto>>(addresses);
     }
