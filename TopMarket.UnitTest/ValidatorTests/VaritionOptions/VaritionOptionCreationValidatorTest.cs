@@ -2,6 +2,8 @@
 using Service.DTOs.VariationOptions;
 using Service.Validators.VaritionOptions;
 
+namespace TopMarket.UnitTest.ValidatorTests.VaritionOption;
+
 public class VariationOptionCreationValidatorTest
 {
     private readonly VariationOptionCreationValidator variationOptionCreationValidator;

@@ -1,8 +1,8 @@
 ﻿using FluentValidation.TestHelper;
 using Service.DTOs.Promotions;
-using Xunit;
-using System;
 using Service.Validators.Promations;
+
+namespace TopMarket.UnitTest.ValidatorTests.Promations;
 
 public class PromotionUpdateDtoValidatorTest
 {

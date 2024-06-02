@@ -4,6 +4,7 @@ using Xunit;
 using System;
 using Service.Validators.Promations;
 
+namespace TopMarket.UnitTest.ValidatorTests.Promations;
 public class PromotionCreationDtoValidatorTest
 {
     private readonly PromotionCreationValidator promationCreationValidator;
