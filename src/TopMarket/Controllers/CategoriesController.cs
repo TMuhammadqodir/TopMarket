@@ -31,7 +31,7 @@ public class CategoriesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.categoryService.UpdateAsync(dto)
+           Data = await this.categoryService.ModifyAsync(dto)
        });
 
 
@@ -41,7 +41,7 @@ public class CategoriesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.categoryService.DeleteAsync(id)
+           Data = await this.categoryService.RemoveAsync(id)
        });
 
 
@@ -51,7 +51,7 @@ public class CategoriesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.categoryService.GetByIdAsync(id)
+           Data = await this.categoryService.RetrieveAsync(id)
        });
 
 
@@ -61,6 +61,6 @@ public class CategoriesController : BaseController
        {
            StatusCode = 200,
            Message = "Success",
-           Data = await this.categoryService.GetAllAsync()
+           Data = await this.categoryService.RetrieveAllAsync()
        });
 }
