@@ -5,7 +5,7 @@ namespace Service.Interfaces;
 
 public interface IRegionService
 {
-    Task<bool> SetAsync();
-    Task<RegionResultDto> RetrieveByIdAsync(long id);
-    Task<IEnumerable<RegionResultDto>> RetrieveAllAsync(PaginationParams @params);
+    Task<bool> SetAsync(CancellationToken cancellationToken = default);
+    Task<RegionResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<RegionResultDto>> RetrieveAllAsync(PaginationParams @params, CancellationToken cancellationToken = default);
 }

@@ -16,18 +16,18 @@ namespace Service.Services;
 public class DistrictService:IDistrictService
 {
     private readonly IMapper mapper;
-    private readonly IRepository<District> repository;
+    private readonly IRepository<District> districtRepository;
     private readonly DistrictCreationValidator districtCreationValidator;
-    public DistrictService(IMapper mapper, IRepository<District> repository)
+    public DistrictService(IMapper mapper, IRepository<District> districtRepository)
     {
         this.mapper = mapper;
-        this.repository = repository;
+        this.districtRepository = districtRepository;
         this.districtCreationValidator = new DistrictCreationValidator();
     }
 
-    public async Task<bool> SetAsync()
+    public async Task<bool> SetAsync(CancellationToken cancellationToken = default)
     {
-        var dbSource = this.repository.GetAll();
+        var dbSource = this.districtRepository.GetAll();
         if (dbSource.Any())
             throw new AlreadyExistException("Districts are already exist");
 
@@ -42,26 +42,28 @@ public class DistrictService:IDistrictService
                 throw new CustomException(403, reusltDistrictCreationValidator.Errors.FirstOrDefault().ToString());
 
             var mappedDistrict = this.mapper.Map<District>(district);
-            await this.repository.AddAsync(mappedDistrict);
-            await this.repository.SaveAsync();
+            await this.districtRepository.AddAsync(mappedDistrict);
+            await this.districtRepository.SaveAsync(cancellationToken);
         }
         return true;
     }
 
-    public async Task<DistrictResultDto> RetrieveByIdAsync(long id)
+    public async Task<DistrictResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var district = await this.repository.GetAsync(r => r.Id.Equals(id), includes: new[] { "Region.Country" })
+        var district = await this.districtRepository.GetAsync(dr => dr.Id.Equals(id), 
+            includes: new[] { "Region.Country" }, 
+            cancellationToken: cancellationToken)
             ?? throw new NotFoundException("This district is not found");
 
         var mappedDistrict = this.mapper.Map<DistrictResultDto>(district);
         return mappedDistrict;
     }
 
-    public async Task<IEnumerable<DistrictResultDto>> RetrieveAllAsync(PaginationParams @params)
+    public async Task<IEnumerable<DistrictResultDto>> RetrieveAllAsync(PaginationParams @params, CancellationToken cancellationToken = default)
     {
-        var districts = await this.repository.GetAll(includes: new[] { "Region.Country" })
+        var districts = await this.districtRepository.GetAll(includes: new[] { "Region.Country" })
             .ToPaginate(@params)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         var result = this.mapper.Map<IEnumerable<DistrictResultDto>>(districts);
         return result;
     }
