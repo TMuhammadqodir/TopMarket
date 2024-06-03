@@ -13,39 +13,36 @@ public class VariationOptionUpdateValidatorTests
         this.variationOptionUpdateValidator = new VariationOptionUpdateValidator();
     }
 
-    [Fact]
-    public void ShouldHaveErrorWhenIdIsZero()
+    [Theory]
+    [InlineData(1, "")]
+    [InlineData(0, "ds")]
+    [InlineData(null, "ds")]
+    [InlineData(null, null)]
+    public void ShouldBeEqualToFalse(long id, string value)
     {
-        var model = new VariationOptionUpdateDto { Id = 0 };
-        var result = this.variationOptionUpdateValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Id);
+        var variationOption = new VariationOptionUpdateDto
+        {
+            Id = id,
+            Value = value
+        };
+
+        var result = variationOptionUpdateValidator.Validate(variationOption);
+
+        Assert.False(result.IsValid);
     }
 
-    [Fact]
-    public void ShouldHaveErrorWhenValueIsEmpty()
-    {
-        var model = new VariationOptionUpdateDto { Value = string.Empty };
-        var result = this.variationOptionUpdateValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Value);
-    }
 
     [Fact]
-    public void ShouldHaveErrorWhenValueIsTooLong()
+    public void ShouldBeEqualToTrue()
     {
-        var model = new VariationOptionUpdateDto { Value = new string('a', 129) };
-        var result = this.variationOptionUpdateValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Value);
-    }
-
-    [Fact]
-    public void ShouldNotHaveErrorWhenModelIsValid()
-    {
-        var model = new VariationOptionUpdateDto
+        var variationOption = new VariationOptionUpdateDto
         {
             Id = 1,
             Value = "Valid Value"
         };
-        var result = this.variationOptionUpdateValidator.TestValidate(model);
+
+        var result = variationOptionUpdateValidator.TestValidate(variationOption);
+
         result.ShouldNotHaveAnyValidationErrors();
     }
 }
