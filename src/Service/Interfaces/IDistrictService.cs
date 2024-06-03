@@ -5,7 +5,7 @@ namespace Service.Interfaces;
 
 public interface IDistrictService
 {
-    Task<bool> SetAsync();
-    Task<DistrictResultDto> RetrieveByIdAsync(long id);
-    Task<IEnumerable<DistrictResultDto>> RetrieveAllAsync(PaginationParams @params);
+    Task<bool> SetAsync(CancellationToken cancellationToken = default);
+    Task<DistrictResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<DistrictResultDto>> RetrieveAllAsync(PaginationParams @params, CancellationToken cancellationToken = default);
 }

@@ -5,9 +5,9 @@ namespace Service.Interfaces;
 
 public interface IPromotionService
 {
-    Task<PromotionResultDto> CreateAsync(PromotionCreationDto dto);
-    Task<PromotionResultDto> UpdateAsync(PromotionUpdateDto dto);
-    Task<bool> DeleteAsync(long id);
-    Task<PromotionResultDto> GetByIdAsync(long id);
-    Task<IEnumerable<PromotionResultDto>> GetAllAsync();
+    Task<PromotionResultDto> CreateAsync(PromotionCreationDto dto, CancellationToken cancellationToken = default);
+    Task<PromotionResultDto> UpdateAsync(PromotionUpdateDto dto, CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default);
+    Task<PromotionResultDto> GetByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<PromotionResultDto>> GetAllAsync(CancellationToken cancellationToken = default);
 }

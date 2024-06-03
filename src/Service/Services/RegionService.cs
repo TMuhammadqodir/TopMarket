@@ -22,7 +22,7 @@ public class RegionService:IRegionService
         this.mapper = mapper;
     }
 
-    public async Task<bool> SetAsync()
+    public async Task<bool> SetAsync(CancellationToken cancellationToken = default)
     {
         var dbSource = this.regionRepository.GetAll();
         if (dbSource.Any())
@@ -37,25 +37,27 @@ public class RegionService:IRegionService
         {
             var mappedRegion = this.mapper.Map<Region>(region);
             await this.regionRepository.AddAsync(mappedRegion);
-            await this.regionRepository.SaveAsync();
+            await this.regionRepository.SaveAsync(cancellationToken);
         }
         return true;
     }
 
-    public async Task<RegionResultDto> RetrieveByIdAsync(long id)
+    public async Task<RegionResultDto> RetrieveByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        var region = await this.regionRepository.GetAsync(r => r.Id.Equals(id), includes: new[] { "Country" })
+        var region = await this.regionRepository.GetAsync(rr => rr.Id.Equals(id), 
+            includes: new[] { "Country" },
+            cancellationToken:cancellationToken)
             ?? throw new NotFoundException("This region is not found");
 
         var mappedRegion = this.mapper.Map<RegionResultDto>(region);
         return mappedRegion;
     }
 
-    public async Task<IEnumerable<RegionResultDto>> RetrieveAllAsync(PaginationParams @params)
+    public async Task<IEnumerable<RegionResultDto>> RetrieveAllAsync(PaginationParams @params, CancellationToken cancellationToken = default)
     {
         var regions = await this.regionRepository.GetAll(includes: new[] { "Country" })
             .ToPaginate(@params)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         var result = this.mapper.Map<IEnumerable<RegionResultDto>>(regions);
         return result;
     }
