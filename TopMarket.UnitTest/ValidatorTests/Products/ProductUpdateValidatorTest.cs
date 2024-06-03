@@ -16,7 +16,7 @@ public class ProductUpdateValidatorTest
     [InlineData(2, "", "uz", 2L)]
     [InlineData(3, "", "", 0)]
     [InlineData(4, "fd", "fd", 0)]
-    [InlineData(5, "u", "u", 1L)]
+    [InlineData(5, "u", "", 1L)]
     [InlineData(0, "uz", null, null)]
     [InlineData(0, "32d", "ds", 2)]
     [InlineData(null, null, null, null)]

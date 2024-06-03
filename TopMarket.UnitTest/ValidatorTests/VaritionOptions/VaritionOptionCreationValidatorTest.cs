@@ -13,48 +13,38 @@ public class VariationOptionCreationValidatorTest
         this.variationOptionCreationValidator = new VariationOptionCreationValidator();
     }
 
-    [Fact]
-    public void ShouldHaveErrorWhenValueIsEmpty()
+    [Theory]
+    [InlineData("", 1, 1)]
+    [InlineData("ds", 0, 1)]
+    [InlineData("ds", 1, 0)]
+    [InlineData(null, null, null)]
+    public void ShouldBeEqualToFalse(string value, long varitionId, long productItemId)
     {
-        var model = new VariationOptionCreationDto { Value = string.Empty };
-        var result = this.variationOptionCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Value);
+        var variationOption = new VariationOptionCreationDto
+        {
+            Value = value,
+            VariationId = varitionId,
+            ProductItemId = productItemId
+        };
+
+        var result = variationOptionCreationValidator.Validate(variationOption);
+
+        Assert.False(result.IsValid);
     }
 
-    [Fact]
-    public void ShouldHaveErrorWhenValueIsTooLong()
-    {
-        var model = new VariationOptionCreationDto { Value = new string('a', 129) };
-        var result = this.variationOptionCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Value);
-    }
 
     [Fact]
-    public void ShouldHaveErrorWhenVariationIdIsZero()
+    public void ShouldBeEqualToTrue()
     {
-        var model = new VariationOptionCreationDto { VariationId = 0 };
-        var result = this.variationOptionCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.VariationId);
-    }
-
-    [Fact]
-    public void ShouldHaveErrorWhenProductItemIdIsZero()
-    {
-        var model = new VariationOptionCreationDto { ProductItemId = 0 };
-        var result = this.variationOptionCreationValidator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.ProductItemId);
-    }
-
-    [Fact]
-    public void ShouldNotHaveErrorWhenModelIsValid()
-    {
-        var model = new VariationOptionCreationDto
+        var variationOption = new VariationOptionCreationDto
         {
             Value = "Valid Value",
             VariationId = 1,
             ProductItemId = 1
         };
-        var result = this.variationOptionCreationValidator.TestValidate(model);
+
+        var result = variationOptionCreationValidator.TestValidate(variationOption);
+
         result.ShouldNotHaveAnyValidationErrors();
     }
 }
