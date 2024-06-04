@@ -29,4 +29,8 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Topmarket.IntegrationTests"/>
+	</ItemGroup>
+	
 </Project>

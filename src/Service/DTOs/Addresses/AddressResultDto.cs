@@ -6,6 +6,7 @@ namespace Service.DTOs.Addresses;
 
 public class AddressResultDto
 {
+    public long Id { get; set; }
     public string Street { get; set; }
     public string Floor { get; set; }
     public string Home { get; set; }
