@@ -111,7 +111,7 @@ public class AddressService : IAddressService
     {
         var addresses = await this.repository.GetAll(includes: new[] { "Country", "Region", "District" })
             .ToPaginate(@params)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return this.mapper.Map<IEnumerable<AddressResultDto>>(addresses);
     }
