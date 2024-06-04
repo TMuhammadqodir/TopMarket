@@ -32,9 +32,9 @@ builder.Services.AddControllersWithViews()
 var app = builder.Build();
 
 PathHepler.WebRootPath = Path.GetFullPath("wwwroot");
-PathHepler.CountryPath = Path.GetFullPath(builder.Configuration.GetValue<string>(("FilePath:CountryFilePaths")));
-PathHepler.RegionPath = Path.GetFullPath(builder.Configuration.GetValue<string>(("FilePath:RegionFilePaths")));
-PathHepler.DistrictPath = Path.GetFullPath(builder.Configuration.GetValue<string>(("FilePath:DictrictsFilePaths")));
+PathHepler.CountryPath = Path.GetFullPath(builder.Configuration.GetValue<string>(("FilePath:CountryFilePaths"))!);
+PathHepler.RegionPath = Path.GetFullPath(builder.Configuration.GetValue<string>(("FilePath:RegionFilePaths"))!);
+PathHepler.DistrictPath = Path.GetFullPath(builder.Configuration.GetValue<string>(("FilePath:DictrictsFilePaths"))!);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
