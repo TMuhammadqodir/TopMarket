@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopMarket.UnitTest", "TopMarket.UnitTest\TopMarket.UnitTest.csproj", "{3BBC9E87-332F-4297-9556-50177AB90442}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopMarket.IntegrationTests", "TopMarket.IntegrationTests\TopMarket.IntegrationTests.csproj", "{5C884C1B-FEA1-43D6-9F47-58CCD0EF5AA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{3BBC9E87-332F-4297-9556-50177AB90442}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BBC9E87-332F-4297-9556-50177AB90442}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BBC9E87-332F-4297-9556-50177AB90442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C884C1B-FEA1-43D6-9F47-58CCD0EF5AA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C884C1B-FEA1-43D6-9F47-58CCD0EF5AA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C884C1B-FEA1-43D6-9F47-58CCD0EF5AA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C884C1B-FEA1-43D6-9F47-58CCD0EF5AA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{2DAFBAD6-6A4A-4F96-9BA3-DAE31FD2B5A5} = {9A29A5EC-6D97-44FC-ABA2-1C440D58E53B}
 		{30D7DC15-273D-4E90-9501-A62F11E44FCF} = {9A29A5EC-6D97-44FC-ABA2-1C440D58E53B}
 		{3BBC9E87-332F-4297-9556-50177AB90442} = {913D042D-518B-4B55-BA85-1306276FB41A}
+		{5C884C1B-FEA1-43D6-9F47-58CCD0EF5AA1} = {913D042D-518B-4B55-BA85-1306276FB41A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90F85F2A-3279-43E4-ACCB-0195B8C89482}
